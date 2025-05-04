@@ -24,6 +24,12 @@ void set_var_notify_count(int32_t value) {
     notify_count = value;
 }
 
+void action_notify_clear(lv_event_t *e) {
+    dataList.clearMessageList();
+    set_var_notify_count(0);
+}
+
+
 uint8_t writeHolders(uint8_t fc, uint16_t address, uint16_t length)
 {
 

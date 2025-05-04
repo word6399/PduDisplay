@@ -14,6 +14,7 @@ enum {
 extern void action_mode_changed(lv_event_t * e);
 
 extern void action_net_changed(lv_event_t * e);
+extern void action_notify_clear(lv_event_t * e);
 
 
 #ifdef __cplusplus
