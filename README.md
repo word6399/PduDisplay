@@ -1,7 +1,10 @@
-<!-- slide -->
-
 
 # PDU Display
+
+
+![alt](/icons/data.png)![alt](/icons/setting.png) 
+![alt](/icons/notation.png)![alt](/icons/system.png) 
+![alt](/icons/control_left.png)![alt](/icons/control_right.png)![alt](/icons/control_down.png)
 
 First
 
