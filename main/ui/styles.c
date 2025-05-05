@@ -10,7 +10,7 @@
 //
 
 void init_style_label_font_MAIN_DEFAULT(lv_style_t *style) {
-    lv_style_set_text_font(style, &ui_font_nunito);
+    lv_style_set_text_font(style, &ui_font_nunito_bold_18);
 };
 
 lv_style_t *get_style_label_font_MAIN_DEFAULT() {
