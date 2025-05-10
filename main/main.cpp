@@ -79,15 +79,14 @@ void set_var_setting_net_gw(const char *value) {
     setting_net_gw[sizeof(setting_net_gw) / sizeof(char) - 1] = 0;
 }
 
-char setting_mode[100] = { 0 };
+int32_t setting_mode;
 
-const char *get_var_setting_mode() {
+int32_t get_var_setting_mode() {
     return setting_mode;
 }
 
-void set_var_setting_mode(const char *value) {
-    strncpy(setting_mode, value, sizeof(setting_mode) / sizeof(char));
-    setting_mode[sizeof(setting_mode) / sizeof(char) - 1] = 0;
+void set_var_setting_mode(int32_t value) {
+    setting_mode = value;
 }
 
 

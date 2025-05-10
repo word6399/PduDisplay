@@ -15,7 +15,8 @@ extern "C" {
 // Flow global variables
 
 enum FlowGlobalVariables {
-    FLOW_GLOBAL_VARIABLE_COLOR_SETTING = 0
+    FLOW_GLOBAL_VARIABLE_COLOR_SETTING = 0,
+    FLOW_GLOBAL_VARIABLE_GROUP_TEST = 1
 };
 
 // Native global variables
@@ -26,8 +27,8 @@ extern const char *get_var_setting_net_mask();
 extern void set_var_setting_net_mask(const char *value);
 extern const char *get_var_setting_net_gw();
 extern void set_var_setting_net_gw(const char *value);
-extern const char *get_var_setting_mode();
-extern void set_var_setting_mode(const char *value);
+extern int32_t get_var_setting_mode();
+extern void set_var_setting_mode(int32_t value);
 extern int32_t get_var_notify_count();
 extern void set_var_notify_count(int32_t value);
 

@@ -134,7 +134,7 @@ uint8_t writeHolders(uint8_t fc, uint16_t address, uint16_t length)
               break;
       }
       
-      set_var_setting_mode(wrocktext.c_str());
+      set_var_setting_mode(worckMode);
 
     }
 

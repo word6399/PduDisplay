@@ -1,12 +1,14 @@
 
-# PDU Display
+- [PDU Display](#pdu-display)
+  - [Структура проекта](#структура-проекта)
+  - [Переферия](#переферия)
 
+# PDU Display
 
 ![alt](/icons/data.png)![alt](/icons/setting.png) <br>
 ![alt](/icons/notation.png)![alt](/icons/system.png) <br>
 ![alt](/icons/control_left.png)![alt](/icons/control_right.png)![alt](/icons/control_down.png) <br>
 
-First
 
 ## Структура проекта
 
@@ -17,8 +19,6 @@ First
 [Иходники](/main/)
 [Компоненты](/components/)
 [FAT file system](/data/)
-
-
 
 
 ## Переферия

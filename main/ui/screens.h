@@ -29,12 +29,12 @@ typedef struct _objects_t {
     lv_obj_t *window_setting_mode;
     lv_obj_t *window_setting_mode_change;
     lv_obj_t *obj0;
-    lv_obj_t *obj0__control_left;
-    lv_obj_t *obj0__control_up;
-    lv_obj_t *obj0__control_down;
-    lv_obj_t *obj0__obj0;
+    lv_obj_t *obj0__obj16;
     lv_obj_t *obj1;
-    lv_obj_t *obj1__obj16;
+    lv_obj_t *obj1__control_left;
+    lv_obj_t *obj1__control_up;
+    lv_obj_t *obj1__control_down;
+    lv_obj_t *obj1__obj0;
     lv_obj_t *obj2;
     lv_obj_t *obj2__control_left;
     lv_obj_t *obj2__control_up;
