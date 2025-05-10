@@ -16,7 +16,8 @@ extern "C" {
 
 enum FlowGlobalVariables {
     FLOW_GLOBAL_VARIABLE_COLOR_SETTING = 0,
-    FLOW_GLOBAL_VARIABLE_GROUP_TEST = 1
+    FLOW_GLOBAL_VARIABLE_GROUP_TEST = 1,
+    FLOW_GLOBAL_VARIABLE_NET_MODE = 2
 };
 
 // Native global variables
@@ -31,6 +32,8 @@ extern int32_t get_var_setting_mode();
 extern void set_var_setting_mode(int32_t value);
 extern int32_t get_var_notify_count();
 extern void set_var_notify_count(int32_t value);
+extern bool get_var_net_dhcp();
+extern void set_var_net_dhcp(bool value);
 
 
 #ifdef __cplusplus

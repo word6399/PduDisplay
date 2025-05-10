@@ -386,7 +386,6 @@ void setup()
     lv_indev_set_read_cb(indev, example_lvgl_touch_cb);
 
 
-
     ESP_LOGI(TAG, "Create LVGL task");
     //xTaskCreate(example_lvgl_port_task, "LVGL", EXAMPLE_LVGL_TASK_STACK_SIZE, NULL, EXAMPLE_LVGL_TASK_PRIORITY, NULL);
 
@@ -400,6 +399,8 @@ void setup()
     //_lock_release(&lvgl_api_lock);
 
     modBus.init();
+
+    
 
     xTaskCreatePinnedToCore(
         Task1code,   // Функция задачи. 

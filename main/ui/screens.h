@@ -28,6 +28,7 @@ typedef struct _objects_t {
     lv_obj_t *window_setting_display_change;
     lv_obj_t *window_setting_mode;
     lv_obj_t *window_setting_mode_change;
+    lv_obj_t *tst;
     lv_obj_t *obj0;
     lv_obj_t *obj0__obj16;
     lv_obj_t *obj1;
@@ -123,6 +124,7 @@ typedef struct _objects_t {
     lv_obj_t *obj34;
     lv_obj_t *obj35;
     lv_obj_t *obj36;
+    lv_obj_t *asssd;
     lv_obj_t *obj37;
     lv_obj_t *obj38;
     lv_obj_t *obj39;
@@ -203,6 +205,7 @@ enum ScreensEnum {
     SCREEN_ID_WINDOW_SETTING_DISPLAY_CHANGE = 10,
     SCREEN_ID_WINDOW_SETTING_MODE = 11,
     SCREEN_ID_WINDOW_SETTING_MODE_CHANGE = 12,
+    SCREEN_ID_TST = 13,
 };
 
 void create_screen_main();
@@ -240,6 +243,9 @@ void tick_screen_window_setting_mode();
 
 void create_screen_window_setting_mode_change();
 void tick_screen_window_setting_mode_change();
+
+void create_screen_tst();
+void tick_screen_tst();
 
 void create_user_widget_controls_bottom(lv_obj_t *parent_obj, void *flowState, int startWidgetIndex);
 void tick_user_widget_controls_bottom(void *flowState, int startWidgetIndex);

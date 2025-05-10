@@ -16,6 +16,17 @@ int total = 0;
 
 int32_t notify_count;
 
+bool net_dhcp;
+
+bool get_var_net_dhcp() {
+    return net_dhcp;
+}
+
+void set_var_net_dhcp(bool value) {
+    net_dhcp = value;
+}
+
+
 int32_t get_var_notify_count() {
     return notify_count;
 }
@@ -260,15 +271,21 @@ uint8_t writeHolders(uint8_t fc, uint16_t address, uint16_t length)
 
 void action_mode_changed(lv_event_t *e) {
   
-  uint32_t data = (uint32_t)lv_event_get_user_data(e);
-  setWorckMode = data;
+  bool data = (bool)lv_event_get_user_data(e);
+  lv_obj_t *slider = (lv_obj_t *)lv_event_get_target(e);
+  data = lv_obj_has_state(slider, LV_STATE_CHECKED);
+  if(data == false)  ethernetReset = 1;
+  Serial.println("action dhcp" + String(data));
   
 }
 
 void action_net_changed(lv_event_t *e) {
   // TODO: Implement action net_changed here
-  uint32_t data = (uint32_t)lv_event_get_user_data(e);
-  ethernetReset = data;
+  lv_obj_t *slider = (lv_obj_t *)lv_event_get_target(e);
+  net_dhcp = lv_obj_has_state(slider, LV_STATE_CHECKED);
+  if(net_dhcp == true)  ethernetReset = 1;
+  else ethernetReset = 2;
+  Serial.println("action dhcp" + String(net_dhcp));
 }
 
 
