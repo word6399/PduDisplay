@@ -1,4 +1,9 @@
 #include "ModbusControls.h"
+#include "eez-flow.h"
+#include "ui/fonts.h"
+#include "screens.h"
+extern objects_t objects;
+
 
 ModbusLib slave(Serial1, 0xF0);
 uint16_t ethernetReset = 0;
@@ -37,8 +42,74 @@ void set_var_notify_count(int32_t value) {
 
 void action_notify_clear(lv_event_t *e) {
     dataList.clearMessageList();
+    lv_obj_clean(objects.message_list);
     set_var_notify_count(0);
 }
+
+int32_t set_net_mode;
+
+int32_t get_var_set_net_mode() {
+    return set_net_mode;
+}
+
+void set_var_set_net_mode(int32_t value) {
+    set_net_mode = value;
+    
+}
+
+int32_t net_mode;
+
+int32_t get_var_net_mode() {
+    return net_mode;
+}
+
+void set_var_net_mode(int32_t value) {
+    net_mode = value;
+}
+
+#include "ui/vars.h"
+
+
+void addMessage(String message){
+  lv_obj_t * btn = lv_button_create( objects.message_list );
+  lv_obj_t *label = lv_label_create( btn );
+
+  lv_obj_set_style_text_font(label, &ui_font_nunito_bold_18, 0);
+  lv_label_set_text(label, message.c_str());
+
+  lv_obj_set_height(btn, 40);
+  lv_obj_set_width (btn, LV_PCT(100));    
+  lv_obj_set_style_bg_opa(btn, 0, 0);
+  lv_color_t bg_color;
+  bg_color.red    = 0x15;
+  bg_color.green  = 0x14;
+  bg_color.blue   = 0x19;
+  lv_obj_set_style_border_color(btn, bg_color, 0);
+  lv_obj_set_style_border_width(btn, 2, 0);
+  lv_obj_set_user_data(btn, (void*)("asdfasdf"));
+
+  //eez_flow_set_screen();
+
+  lv_event_cb_t handler =  [](lv_event_t * e){
+    lv_event_code_t code = lv_event_get_code(e);
+
+    if(code == LV_EVENT_CLICKED){
+        //loadScreen();
+        //message.c_str();
+        char * message = (char *)lv_event_get_user_data(e);
+        lv_obj_t * obj = lv_event_get_target_obj(e);
+        lv_label_t * label = (lv_label_t *)lv_obj_get_child(obj, 0);
+        
+        set_var_notify_message( lv_label_get_text((lv_obj_t *)label));
+        Serial.println(lv_label_get_text((lv_obj_t *)label));
+
+        eez_flow_set_screen( SCREEN_ID_WINDOW_NOTIFY_MESAGGE, LV_SCR_LOAD_ANIM_NONE, 0, 0);
+    }
+  };
+
+  lv_obj_add_event_cb(btn, handler, LV_EVENT_CLICKED, (void*)(message.c_str()));
+}
+
 
 
 uint8_t writeHolders(uint8_t fc, uint16_t address, uint16_t length)
@@ -144,6 +215,8 @@ uint8_t writeHolders(uint8_t fc, uint16_t address, uint16_t length)
               wrocktext = "Slave 3";
               break;
       }
+      set_var_net_mode(worckMode);
+      Serial.println("Mode: " + String(worckMode));
       
       set_var_setting_mode(worckMode);
 
@@ -257,6 +330,7 @@ uint8_t writeHolders(uint8_t fc, uint16_t address, uint16_t length)
       //Serial.println(str);
       
       dataList.addMessage(str);
+      addMessage(str);
 
       set_var_notify_count(dataList.getMessageList()->size());
       
@@ -298,7 +372,7 @@ uint8_t readHolders(uint8_t fc, uint16_t address, uint16_t length)
       ethernetReset = 0;
     }
     if(address == 7){
-      slave.writeRegisterToBuffer(0, setWorckMode);
+      slave.writeRegisterToBuffer(0, set_net_mode);
       setWorckMode = 0;
     }
     return 0;

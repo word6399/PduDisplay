@@ -46,6 +46,17 @@ TaskHandle_t Task1;
 
 #include "vars.h"
 
+esp_lcd_panel_handle_t panel_handle = NULL;
+lv_display_t *display;
+
+//ArrayOfdata_typeValue
+#include "structs.h"
+
+void action_tst_act(lv_event_t *e) {
+    //ArrayOfdata_typeValue;//[0].
+}
+
+
 char setting_net_ip[100] = { 0 };
 
 const char *get_var_setting_net_ip() {
@@ -87,6 +98,82 @@ int32_t get_var_setting_mode() {
 
 void set_var_setting_mode(int32_t value) {
     setting_mode = value;
+}
+
+int32_t setting_orientation;
+
+int32_t get_var_setting_orientation() {
+    return setting_orientation;
+}
+
+void set_var_setting_orientation(int32_t value) {
+    setting_orientation = value;
+
+    if(setting_orientation == 0){
+        esp_lcd_panel_mirror(panel_handle, false, false);
+        lv_display_set_rotation(display, LV_DISP_ROTATION_0);
+
+        if (FileFS.exists("/display.ini")) {
+            //FileFS
+            FileFS.remove("/display.ini");
+        } else {
+            
+        }
+    } else {
+        esp_lcd_panel_mirror(panel_handle, true, true);
+        lv_display_set_rotation(display, LV_DISP_ROTATION_180);
+
+        if (FileFS.exists("/display.ini")) {
+            //FileFS
+        } else {
+            File file =FileFS.open("/display.ini", FILE_WRITE);
+            uint8_t buf[] = "123";
+            file.write(buf,1);
+            file.close();
+        }
+
+    }
+    
+}
+
+char notify_message[100] = { 0 };
+
+const char *get_var_notify_message() {
+    return notify_message;
+}
+
+void set_var_notify_message(const char *value) {
+    strncpy(notify_message, value, sizeof(notify_message) / sizeof(char));
+    notify_message[sizeof(notify_message) / sizeof(char) - 1] = 0;
+}
+
+#include "ui/fonts.h"
+#include "screens.h"
+extern objects_t objects;
+
+void action_add_message(lv_event_t *e) {
+    //eez_flow_init_object_names();
+
+    lv_obj_t * btn = lv_button_create( objects.message_list );
+    lv_obj_t *label = lv_label_create( btn );
+    //lv_obj_get_style_text_font(label, )
+    lv_obj_set_style_text_font(label, &ui_font_nunito_bold_18, 0);
+
+    lv_obj_set_height(btn, 40);
+    lv_obj_set_width (btn, LV_PCT(100));    
+    lv_obj_set_style_bg_opa(btn, 0, 0);
+    lv_color_t bg_color;
+    bg_color.red    = 0x15;
+    bg_color.green  = 0x14;
+    bg_color.blue   = 0x19;
+    lv_obj_set_style_border_color(btn, bg_color, 0);
+    lv_obj_set_style_border_width(btn, 2, 0);
+
+    
+    
+    
+    //lv_style_set_bg_opa(btn, 0);
+    
 }
 
 
@@ -231,6 +318,9 @@ void setup()
     ESP_ERROR_CHECK(gpio_config(&bk_gpio_config));
 
     Serial.begin(115200);
+
+    dataList.init();
+    
  
 
     ESP_LOGI(TAG, "Initialize SPI bus");
@@ -260,7 +350,7 @@ void setup()
     // Attach the LCD to the SPI bus
     ESP_ERROR_CHECK(esp_lcd_new_panel_io_spi((esp_lcd_spi_bus_handle_t)LCD_HOST, &io_config, &io_handle));
 
-    esp_lcd_panel_handle_t panel_handle = NULL;
+    
     esp_lcd_panel_dev_config_t panel_config = {
         .reset_gpio_num = EXAMPLE_PIN_NUM_LCD_RST,
         .rgb_ele_order = LCD_RGB_ELEMENT_ORDER_RGB,
@@ -274,7 +364,7 @@ void setup()
     ESP_ERROR_CHECK(esp_lcd_panel_init(panel_handle));
     ESP_ERROR_CHECK(esp_lcd_panel_swap_xy(panel_handle, false));
     ESP_ERROR_CHECK(esp_lcd_panel_mirror(panel_handle, false, false));
-    esp_lcd_panel_invert_color(panel_handle, true);
+    ESP_ERROR_CHECK(esp_lcd_panel_invert_color(panel_handle, true));
 
     //panel_handle->mirror(panel_handle, true, false));    
     //esp_lcd_panel_invert_color(panel_handle, true);
@@ -290,7 +380,7 @@ void setup()
     lv_init();
 
     // create a lvgl display
-    lv_display_t *display = lv_display_create(EXAMPLE_LCD_H_RES, EXAMPLE_LCD_V_RES);
+    display = lv_display_create(EXAMPLE_LCD_H_RES, EXAMPLE_LCD_V_RES);
 
     // alloc draw buffers used by LVGL
     // it's recommended to choose the size of the draw buffer(s) to be at least 1/10 screen sized
@@ -394,12 +484,20 @@ void setup()
     //_lock_acquire(&lvgl_api_lock);
     Serial.println("after");
     //CONFIG_LV_THEME_DEFAULT_DARK;
+
+    if (FileFS.exists("/display.ini")) {
+        esp_lcd_panel_mirror(panel_handle, true, true);
+        lv_display_set_rotation(display, LV_DISP_ROTATION_180);
+    } 
+
     ui_init();
     //example_lvgl_demo_ui(display);
     //_lock_release(&lvgl_api_lock);
 
     modBus.init();
 
+
+    
     
 
     xTaskCreatePinnedToCore(
@@ -430,6 +528,18 @@ void loop()
     ui_tick();
     lv_timer_handler();
     lv_tick_inc(1);
+
+    set_var_volt1(dataList.getById(5)->dataF);
+    set_var_volt2(dataList.getById(6)->dataF);
+    set_var_volt3(dataList.getById(7)->dataF);
+
+    set_var_cur1(dataList.getById(1)->dataF);
+    set_var_cur2(dataList.getById(2)->dataF);
+    set_var_cur3(dataList.getById(3)->dataF);
+
+    set_var_pow1(dataList.getById(8)->dataF);
+    set_var_pow2(dataList.getById(9)->dataF);
+    set_var_pow3(dataList.getById(10)->dataF);
     // 
     // counter++;
     // if(counter >1000){

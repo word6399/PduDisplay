@@ -111,12 +111,19 @@ typedef struct _objects_t {
     lv_obj_t *obj21;
     lv_obj_t *obj22;
     lv_obj_t *obj23;
+    lv_obj_t *swithc_orientation0;
+    lv_obj_t *swithc_orientation180;
     lv_obj_t *obj24;
     lv_obj_t *obj25;
     lv_obj_t *obj26;
     lv_obj_t *obj27;
     lv_obj_t *obj28;
     lv_obj_t *obj29;
+    lv_obj_t *switch_master;
+    lv_obj_t *switch_slave1;
+    lv_obj_t *switch_slave2;
+    lv_obj_t *switch_slave3;
+    lv_obj_t *asssd;
     lv_obj_t *obj30;
     lv_obj_t *obj31;
     lv_obj_t *obj32;
@@ -124,7 +131,6 @@ typedef struct _objects_t {
     lv_obj_t *obj34;
     lv_obj_t *obj35;
     lv_obj_t *obj36;
-    lv_obj_t *asssd;
     lv_obj_t *obj37;
     lv_obj_t *obj38;
     lv_obj_t *obj39;
@@ -145,6 +151,7 @@ typedef struct _objects_t {
     lv_obj_t *obj54;
     lv_obj_t *obj55;
     lv_obj_t *obj56;
+    lv_obj_t *message_list;
     lv_obj_t *obj57;
     lv_obj_t *obj58;
     lv_obj_t *obj59;
@@ -186,8 +193,6 @@ typedef struct _objects_t {
     lv_obj_t *obj95;
     lv_obj_t *obj96;
     lv_obj_t *obj97;
-    lv_obj_t *obj98;
-    lv_obj_t *obj99;
 } objects_t;
 
 extern objects_t objects;

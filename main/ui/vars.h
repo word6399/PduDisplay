@@ -17,7 +17,7 @@ extern "C" {
 enum FlowGlobalVariables {
     FLOW_GLOBAL_VARIABLE_COLOR_SETTING = 0,
     FLOW_GLOBAL_VARIABLE_GROUP_TEST = 1,
-    FLOW_GLOBAL_VARIABLE_NET_MODE = 2
+    FLOW_GLOBAL_VARIABLE_DATA = 2
 };
 
 // Native global variables
@@ -34,6 +34,32 @@ extern int32_t get_var_notify_count();
 extern void set_var_notify_count(int32_t value);
 extern bool get_var_net_dhcp();
 extern void set_var_net_dhcp(bool value);
+extern int32_t get_var_set_net_mode();
+extern void set_var_set_net_mode(int32_t value);
+extern int32_t get_var_net_mode();
+extern void set_var_net_mode(int32_t value);
+extern int32_t get_var_setting_orientation();
+extern void set_var_setting_orientation(int32_t value);
+extern const char *get_var_notify_message();
+extern void set_var_notify_message(const char *value);
+extern float get_var_volt1();
+extern void set_var_volt1(float value);
+extern float get_var_volt2();
+extern void set_var_volt2(float value);
+extern float get_var_volt3();
+extern void set_var_volt3(float value);
+extern float get_var_cur1();
+extern void set_var_cur1(float value);
+extern float get_var_cur2();
+extern void set_var_cur2(float value);
+extern float get_var_cur3();
+extern void set_var_cur3(float value);
+extern float get_var_pow1();
+extern void set_var_pow1(float value);
+extern float get_var_pow2();
+extern void set_var_pow2(float value);
+extern float get_var_pow3();
+extern void set_var_pow3(float value);
 
 
 #ifdef __cplusplus

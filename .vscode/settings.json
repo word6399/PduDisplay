@@ -1,12 +1,23 @@
 {
     "C_Cpp.intelliSenseEngine": "default",
     "idf.flashType": "UART",
-    "idf.portWin": "COM3",
+    "idf.portWin": "COM4",
     "files.associations": {
         "array": "cpp",
         "string": "cpp",
         "string_view": "cpp",
-        "span": "cpp"
+        "span": "cpp",
+        "system_error": "cpp",
+        "charconv": "c",
+        "chrono": "c",
+        "optional": "c",
+        "format": "c",
+        "ratio": "c",
+        "functional": "c",
+        "regex": "c",
+        "tuple": "c",
+        "type_traits": "c",
+        "utility": "c"
     },
 
 }
