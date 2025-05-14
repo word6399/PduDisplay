@@ -540,6 +540,9 @@ void loop()
     set_var_pow1(dataList.getById(8)->dataF);
     set_var_pow2(dataList.getById(9)->dataF);
     set_var_pow3(dataList.getById(10)->dataF);
+
+    set_var_cur_all(dataList.getById(4)->dataF);
+    set_var_pow_all(dataList.getById(11)->dataF);
     // 
     // counter++;
     // if(counter >1000){

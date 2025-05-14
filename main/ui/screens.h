@@ -151,11 +151,11 @@ typedef struct _objects_t {
     lv_obj_t *obj54;
     lv_obj_t *obj55;
     lv_obj_t *obj56;
-    lv_obj_t *message_list;
     lv_obj_t *obj57;
     lv_obj_t *obj58;
     lv_obj_t *obj59;
     lv_obj_t *obj60;
+    lv_obj_t *message_list;
     lv_obj_t *obj61;
     lv_obj_t *obj62;
     lv_obj_t *obj63;
@@ -193,6 +193,10 @@ typedef struct _objects_t {
     lv_obj_t *obj95;
     lv_obj_t *obj96;
     lv_obj_t *obj97;
+    lv_obj_t *obj98;
+    lv_obj_t *obj99;
+    lv_obj_t *obj100;
+    lv_obj_t *obj101;
 } objects_t;
 
 extern objects_t objects;

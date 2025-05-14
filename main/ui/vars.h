@@ -60,6 +60,10 @@ extern float get_var_pow2();
 extern void set_var_pow2(float value);
 extern float get_var_pow3();
 extern void set_var_pow3(float value);
+extern float get_var_cur_all();
+extern void set_var_cur_all(float value);
+extern float get_var_pow_all();
+extern void set_var_pow_all(float value);
 
 
 #ifdef __cplusplus
