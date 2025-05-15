@@ -316,6 +316,7 @@ void setup()
         
     };
     ESP_ERROR_CHECK(gpio_config(&bk_gpio_config));
+    gpio_set_level((gpio_num_t)EXAMPLE_PIN_NUM_BK_LIGHT, EXAMPLE_LCD_BK_LIGHT_OFF_LEVEL);
 
     Serial.begin(115200);
 

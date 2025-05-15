@@ -313,6 +313,20 @@ uint8_t writeHolders(uint8_t fc, uint16_t address, uint16_t length)
       sprintf(ip,"%d.%d.%d.%d", ptr8[0], ptr8[1], ptr8[2], ptr8[3]);
       sprintf(mask,"%d.%d.%d.%d", ptr8[4], ptr8[5], ptr8[6], ptr8[7]);
       sprintf(gw,"%d.%d.%d.%d", ptr8[8], ptr8[9], ptr8[10], ptr8[11]);
+
+      if(net[6] == 1){
+        if( get_var_net_dhcp() != true){
+          //set_var_set_net_mode(true);
+          set_var_net_dhcp(true); 
+        }
+              
+      } else if(net[6] == 2) {      
+        if( get_var_net_dhcp() != false){
+          //set_var_set_net_mode(false);
+          set_var_net_dhcp(false);
+        }  
+        
+      }
       
       set_var_setting_net_ip(ip);
       set_var_setting_net_mask(mask);

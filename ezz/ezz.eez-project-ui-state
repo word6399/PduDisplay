@@ -1,15 +1,15 @@
 {
   "navigation": {
-    "selectedUserPageObject": "[ezz.eez-project]:/userPages/0",
+    "selectedUserPageObject": "[ezz.eez-project]:/userPages/1",
     "selectedUserWidgetObject": "[ezz.eez-project]:/userWidgets/3",
     "selectedActionObject": "[ezz.eez-project]:/actions/1",
-    "selectedGlobalVariableObject": "[ezz.eez-project]:/variables/globalVariables/6",
+    "selectedGlobalVariableObject": "[ezz.eez-project]:/variables/globalVariables/23",
     "selectedStyleObject": "[ezz.eez-project]:/lvglStyles/styles/2",
-    "selectedFontObject": "[ezz.eez-project]:/fonts/5",
+    "selectedFontObject": "[ezz.eez-project]:/fonts/9",
     "selectedBitmapObject": "[ezz.eez-project]:/bitmaps/8",
     "selectedLvglGroupObject": "[ezz.eez-project]:/lvglGroups/groups/0",
     "subnavigationSelectedItems": {
-      "variables-tab/sub-navigation/selected-item": "Actions"
+      "variables-tab/sub-navigation/selected-item": "Global"
     }
   },
   "layoutModel": {
@@ -30,7 +30,7 @@
           },
           {
             "type": "border",
-            "selected": 4,
+            "selected": 1,
             "size": 240,
             "location": "right",
             "children": [
@@ -197,24 +197,13 @@
               "type": "tabset",
               "id": "EDITORS",
               "weight": 22.329452008332535,
-              "selected": 2,
+              "selected": 3,
               "enableDeleteWhenEmpty": false,
               "enableClose": false,
               "children": [
                 {
                   "type": "tab",
-                  "id": "#0ebe418d-ad40-4054-84ba-c37cd5488a3a",
-                  "name": "net_changed",
-                  "component": "editor",
-                  "config": {
-                    "objectPath": "[ezz.eez-project]:/actions/1",
-                    "permanent": false
-                  },
-                  "icon": "material:code"
-                },
-                {
-                  "type": "tab",
-                  "id": "#df009609-7368-446f-99c9-a4451435291f",
+                  "id": "#15c96dbd-059f-47c8-815a-72d2481c9860",
                   "name": "Settings",
                   "component": "editor",
                   "config": {
@@ -226,11 +215,33 @@
                 },
                 {
                   "type": "tab",
-                  "id": "#90ba00a7-56d3-4fb0-b4da-f1584a9b921d",
-                  "name": "window_setting_mode_change",
+                  "id": "#e1b8d241-1e4a-4e9f-ac22-09399a920d12",
+                  "name": "RobotoMono-Bold_25",
                   "component": "editor",
                   "config": {
-                    "objectPath": "[ezz.eez-project]:/userPages/11",
+                    "objectPath": "[ezz.eez-project]:/fonts/9",
+                    "permanent": false
+                  },
+                  "icon": "material:font_download"
+                },
+                {
+                  "type": "tab",
+                  "id": "#0f66ffe1-99ab-4125-88ea-14d0eb235921",
+                  "name": "RobotoMono-Bold-20",
+                  "component": "editor",
+                  "config": {
+                    "objectPath": "[ezz.eez-project]:/fonts/6",
+                    "permanent": true
+                  },
+                  "icon": "material:font_download"
+                },
+                {
+                  "type": "tab",
+                  "id": "#90ba00a7-56d3-4fb0-b4da-f1584a9b921d",
+                  "name": "window_data",
+                  "component": "editor",
+                  "config": {
+                    "objectPath": "[ezz.eez-project]:/userPages/1",
                     "permanent": false
                   },
                   "icon": "svg:page"
@@ -257,8 +268,7 @@
                   },
                   "icon": "svg:user_widget"
                 }
-              ],
-              "active": true
+              ]
             },
             {
               "type": "row",
@@ -278,7 +288,8 @@
                       "enableClose": false,
                       "icon": "svg:properties"
                     }
-                  ]
+                  ],
+                  "active": true
                 },
                 {
                   "type": "tabset",
@@ -1075,32 +1086,38 @@
       "selection": {
         "0": {
           "0": {
-            "1": {
-              "$selected": true
-            }
+            "1": {}
           },
           "1": {
             "0": {},
+            "1": {},
             "2": {},
             "3": {},
             "4": {},
             "5": {},
             "6": {},
             "7": {},
-            "8": {},
+            "8": {
+              "0": {
+                "$selected": true
+              }
+            },
             "9": {},
             "10": {},
-            "11": {}
+            "11": {},
+            "12": {},
+            "13": {},
+            "14": {}
           },
           "2": {}
         }
       },
       "transform": {
         "translate": {
-          "x": -252.8413089225595,
-          "y": -198.32010435624557
+          "x": -224.000567225284,
+          "y": -265.93567107334604
         },
-        "scale": 1.5
+        "scale": 1.75
       },
       "timeline": {
         "isEditorActive": false,
@@ -1134,7 +1151,7 @@
           "x": -120,
           "y": -120
         },
-        "scale": 1.1
+        "scale": 1.75
       },
       "timeline": {
         "isEditorActive": false,
@@ -1158,7 +1175,7 @@
           "x": -157.77111823361815,
           "y": -203.76572900750853
         },
-        "scale": 1.1
+        "scale": 1.75
       },
       "timeline": {
         "isEditorActive": false,
@@ -1584,17 +1601,15 @@
   "showComponentDescriptions": true,
   "logsPanelFilter": "all",
   "selectedStylePropertyName": "",
-  "lvglPart": "INDICATOR",
-  "lvglState": "CHECKED",
+  "lvglPart": "MAIN",
+  "lvglState": "DEFAULT",
   "lvglExpandedPropertiesGroup": [
     "TEXT",
     "MISCELLANEOUS",
-    "BORDER",
-    "POSITION AND SIZE",
-    "BACKGROUND"
+    "BORDER"
   ],
   "showInactiveFlowsInDebugger": true,
   "globalFlowZoom": true,
-  "flowZoom": 1.1,
+  "flowZoom": 1.75,
   "implementationLanguage": "C"
 }
