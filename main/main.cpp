@@ -113,6 +113,8 @@ void set_var_setting_orientation(int32_t value) {
         esp_lcd_panel_mirror(panel_handle, false, false);
         lv_display_set_rotation(display, LV_DISP_ROTATION_0);
 
+        
+
         if (FileFS.exists("/display.ini")) {
             //FileFS
             FileFS.remove("/display.ini");
@@ -133,8 +135,48 @@ void set_var_setting_orientation(int32_t value) {
         }
 
     }
+
+    
     
 }
+
+int32_t setting_orientation_not;
+
+int32_t get_var_setting_orientation_not() {
+    return !setting_orientation;
+}
+
+void set_var_setting_orientation_not(int32_t value) {
+    // setting_orientation = !value;
+
+    // if(setting_orientation != 0){
+    //     esp_lcd_panel_mirror(panel_handle, false, false);
+    //     lv_display_set_rotation(display, LV_DISP_ROTATION_0);
+
+        
+
+    //     if (FileFS.exists("/display.ini")) {
+    //         //FileFS
+    //         FileFS.remove("/display.ini");
+    //     } else {
+            
+    //     }
+    // } else {
+    //     esp_lcd_panel_mirror(panel_handle, true, true);
+    //     lv_display_set_rotation(display, LV_DISP_ROTATION_180);
+
+    //     if (FileFS.exists("/display.ini")) {
+    //         //FileFS
+    //     } else {
+    //         File file =FileFS.open("/display.ini", FILE_WRITE);
+    //         uint8_t buf[] = "123";
+    //         file.write(buf,1);
+    //         file.close();
+    //     }
+
+    // }
+}
+
 
 char notify_message[100] = { 0 };
 
@@ -375,7 +417,7 @@ void setup()
     ESP_ERROR_CHECK(esp_lcd_panel_disp_on_off(panel_handle, true));
 
     ESP_LOGI(TAG, "Turn on LCD backlight");
-    gpio_set_level((gpio_num_t)EXAMPLE_PIN_NUM_BK_LIGHT, EXAMPLE_LCD_BK_LIGHT_ON_LEVEL);
+    
 
     ESP_LOGI(TAG, "Initialize LVGL library");
     lv_init();
@@ -495,10 +537,12 @@ void setup()
     //example_lvgl_demo_ui(display);
     //_lock_release(&lvgl_api_lock);
 
+    gpio_set_level((gpio_num_t)EXAMPLE_PIN_NUM_BK_LIGHT, EXAMPLE_LCD_BK_LIGHT_ON_LEVEL);
+
     modBus.init();
 
 
-    
+    set_var_current_date(__DATE__);
     
 
     xTaskCreatePinnedToCore(

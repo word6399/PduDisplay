@@ -64,6 +64,10 @@ extern float get_var_cur_all();
 extern void set_var_cur_all(float value);
 extern float get_var_pow_all();
 extern void set_var_pow_all(float value);
+extern const char *get_var_current_date();
+extern void set_var_current_date(const char *value);
+extern int32_t get_var_setting_orientation_not();
+extern void set_var_setting_orientation_not(int32_t value);
 
 
 #ifdef __cplusplus

@@ -29,7 +29,6 @@ typedef struct _objects_t {
     lv_obj_t *window_setting_mode;
     lv_obj_t *window_setting_mode_change;
     lv_obj_t *tst;
-    lv_obj_t *window_data_1;
     lv_obj_t *obj0;
     lv_obj_t *obj0__obj16;
     lv_obj_t *obj1;
@@ -97,15 +96,11 @@ typedef struct _objects_t {
     lv_obj_t *obj12__control_up;
     lv_obj_t *obj12__control_down;
     lv_obj_t *obj12__obj0;
-    lv_obj_t *obj13;
-    lv_obj_t *obj13__control_left;
-    lv_obj_t *obj13__control_up;
-    lv_obj_t *obj13__control_down;
-    lv_obj_t *obj13__obj0;
     lv_obj_t *test_button;
     lv_obj_t *test_button_2;
     lv_obj_t *test_button_3;
     lv_obj_t *test_button_4;
+    lv_obj_t *obj13;
     lv_obj_t *obj14;
     lv_obj_t *obj15;
     lv_obj_t *obj16;
@@ -117,20 +112,20 @@ typedef struct _objects_t {
     lv_obj_t *obj22;
     lv_obj_t *obj23;
     lv_obj_t *obj24;
+    lv_obj_t *obj25;
     lv_obj_t *swithc_orientation0;
     lv_obj_t *swithc_orientation180;
-    lv_obj_t *obj25;
     lv_obj_t *obj26;
     lv_obj_t *obj27;
     lv_obj_t *obj28;
     lv_obj_t *obj29;
     lv_obj_t *obj30;
+    lv_obj_t *obj31;
     lv_obj_t *switch_master;
     lv_obj_t *switch_slave1;
     lv_obj_t *switch_slave2;
     lv_obj_t *switch_slave3;
     lv_obj_t *asssd;
-    lv_obj_t *obj31;
     lv_obj_t *obj32;
     lv_obj_t *obj33;
     lv_obj_t *obj34;
@@ -162,8 +157,8 @@ typedef struct _objects_t {
     lv_obj_t *obj60;
     lv_obj_t *obj61;
     lv_obj_t *obj62;
-    lv_obj_t *message_list;
     lv_obj_t *obj63;
+    lv_obj_t *message_list;
     lv_obj_t *obj64;
     lv_obj_t *obj65;
     lv_obj_t *obj66;
@@ -205,14 +200,6 @@ typedef struct _objects_t {
     lv_obj_t *obj102;
     lv_obj_t *obj103;
     lv_obj_t *obj104;
-    lv_obj_t *obj105;
-    lv_obj_t *obj106;
-    lv_obj_t *obj107;
-    lv_obj_t *obj108;
-    lv_obj_t *obj109;
-    lv_obj_t *obj110;
-    lv_obj_t *obj111;
-    lv_obj_t *obj112;
 } objects_t;
 
 extern objects_t objects;
@@ -231,7 +218,6 @@ enum ScreensEnum {
     SCREEN_ID_WINDOW_SETTING_MODE = 11,
     SCREEN_ID_WINDOW_SETTING_MODE_CHANGE = 12,
     SCREEN_ID_TST = 13,
-    SCREEN_ID_WINDOW_DATA_1 = 14,
 };
 
 void create_screen_main();
@@ -273,9 +259,6 @@ void tick_screen_window_setting_mode_change();
 void create_screen_tst();
 void tick_screen_tst();
 
-void create_screen_window_data_1();
-void tick_screen_window_data_1();
-
 void create_user_widget_controls_bottom(lv_obj_t *parent_obj, void *flowState, int startWidgetIndex);
 void tick_user_widget_controls_bottom(void *flowState, int startWidgetIndex);
 
@@ -302,9 +285,6 @@ void tick_user_widget_data_default(void *flowState, int startWidgetIndex);
 
 void create_user_widget_controls_top(lv_obj_t *parent_obj, void *flowState, int startWidgetIndex);
 void tick_user_widget_controls_top(void *flowState, int startWidgetIndex);
-
-void create_user_widget_data_widget(lv_obj_t *parent_obj, void *flowState, int startWidgetIndex);
-void tick_user_widget_data_widget(void *flowState, int startWidgetIndex);
 
 void tick_screen_by_id(enum ScreensEnum screenId);
 void tick_screen(int screen_index);
