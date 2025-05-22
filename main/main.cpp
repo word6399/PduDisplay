@@ -136,18 +136,22 @@ void set_var_setting_orientation(int32_t value) {
 
     }
 
-    
+    set_var_setting_orientation_not(!value);
+
+    Serial.println("go to rotate " + String(value));
+
     
 }
 
 int32_t setting_orientation_not;
 
 int32_t get_var_setting_orientation_not() {
-    return !setting_orientation;
+    return setting_orientation_not;
 }
 
 void set_var_setting_orientation_not(int32_t value) {
-    // setting_orientation = !value;
+    Serial.println("go to rotate not " + String(value));
+    setting_orientation_not = value;
 
     // if(setting_orientation != 0){
     //     esp_lcd_panel_mirror(panel_handle, false, false);
@@ -261,35 +265,7 @@ static bool example_notify_lvgl_flush_ready(esp_lcd_panel_io_handle_t panel_io, 
     return false;
 }
 
-/* Rotate display and touch, when rotated screen in LVGL. Called when driver parameters are updated. */
-static void example_lvgl_port_update_callback(lv_display_t *disp)
-{
-    esp_lcd_panel_handle_t panel_handle = (esp_lcd_panel_handle_t)lv_display_get_user_data(disp);
-    lv_display_rotation_t rotation = lv_display_get_rotation(disp);
 
-    switch (rotation) {
-    case LV_DISPLAY_ROTATION_0:
-        // Rotate LCD display
-        esp_lcd_panel_swap_xy(panel_handle, true);
-        esp_lcd_panel_mirror(panel_handle, true, false);
-        break;
-    case LV_DISPLAY_ROTATION_90:
-        // Rotate LCD display
-        esp_lcd_panel_swap_xy(panel_handle, false);
-        esp_lcd_panel_mirror(panel_handle, true, true);
-        break;
-    case LV_DISPLAY_ROTATION_180:
-        // Rotate LCD display
-        esp_lcd_panel_swap_xy(panel_handle, true);
-        esp_lcd_panel_mirror(panel_handle, false, true);
-        break;
-    case LV_DISPLAY_ROTATION_270:
-        // Rotate LCD display
-        esp_lcd_panel_swap_xy(panel_handle, false);
-        esp_lcd_panel_mirror(panel_handle, false, false);
-        break;
-    }
-}
 
 static void example_lvgl_flush_cb(lv_display_t *disp, const lv_area_t *area, uint8_t *px_map)
 {
@@ -529,13 +505,18 @@ void setup()
     //CONFIG_LV_THEME_DEFAULT_DARK;
 
     if (FileFS.exists("/display.ini")) {
-        esp_lcd_panel_mirror(panel_handle, true, true);
-        lv_display_set_rotation(display, LV_DISP_ROTATION_180);
-    } 
+        set_var_setting_orientation(1);
+    } else {
+        set_var_setting_orientation(0);
+    }
+
+    
 
     ui_init();
     //example_lvgl_demo_ui(display);
     //_lock_release(&lvgl_api_lock);
+
+    
 
     gpio_set_level((gpio_num_t)EXAMPLE_PIN_NUM_BK_LIGHT, EXAMPLE_LCD_BK_LIGHT_ON_LEVEL);
 
@@ -543,6 +524,8 @@ void setup()
 
 
     set_var_current_date(__DATE__);
+
+    
     
 
     xTaskCreatePinnedToCore(
@@ -553,7 +536,8 @@ void setup()
         1,           // Приоритет 
         &Task1,      // Дескриптор задачи для отслеживания 
         0);          // Указываем пин для данного ядра  
-    
+
+    Serial.println("start [rogram]");
 }
 
 void Task1code( void * pvParameters ){

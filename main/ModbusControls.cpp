@@ -31,6 +31,17 @@ void set_var_net_dhcp(bool value) {
     net_dhcp = value;
 }
 
+bool set_net_dhcp;
+
+bool get_var_set_net_dhcp() {
+    return set_net_dhcp;
+}
+
+void set_var_set_net_dhcp(bool value) {
+    set_net_dhcp = value;
+    set_var_net_dhcp(value);
+}
+
 
 int32_t get_var_notify_count() {
     return notify_count;
@@ -54,6 +65,7 @@ int32_t get_var_set_net_mode() {
 
 void set_var_set_net_mode(int32_t value) {
     set_net_mode = value;
+    Serial.println("set net mode: " + String(value));
     
 }
 

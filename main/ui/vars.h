@@ -68,6 +68,8 @@ extern const char *get_var_current_date();
 extern void set_var_current_date(const char *value);
 extern int32_t get_var_setting_orientation_not();
 extern void set_var_setting_orientation_not(int32_t value);
+extern bool get_var_set_net_dhcp();
+extern void set_var_set_net_dhcp(bool value);
 
 
 #ifdef __cplusplus
