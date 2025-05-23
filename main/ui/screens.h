@@ -29,6 +29,7 @@ typedef struct _objects_t {
     lv_obj_t *window_setting_mode;
     lv_obj_t *window_setting_mode_change;
     lv_obj_t *tst;
+    lv_obj_t *window_data_custom;
     lv_obj_t *obj0;
     lv_obj_t *obj0__obj16;
     lv_obj_t *obj1;
@@ -100,14 +101,33 @@ typedef struct _objects_t {
     lv_obj_t *obj16__control_up;
     lv_obj_t *obj16__control_down;
     lv_obj_t *obj16__obj0;
+    lv_obj_t *obj17;
+    lv_obj_t *obj17__obj17;
+    lv_obj_t *obj17__obj18;
+    lv_obj_t *obj17__obj19;
+    lv_obj_t *obj17__obj20;
+    lv_obj_t *obj17__obj21;
+    lv_obj_t *obj18;
+    lv_obj_t *obj18__obj17;
+    lv_obj_t *obj18__obj18;
+    lv_obj_t *obj18__obj19;
+    lv_obj_t *obj18__obj20;
+    lv_obj_t *obj18__obj21;
+    lv_obj_t *obj19;
+    lv_obj_t *obj19__obj17;
+    lv_obj_t *obj19__obj18;
+    lv_obj_t *obj19__obj19;
+    lv_obj_t *obj19__obj20;
+    lv_obj_t *obj19__obj21;
+    lv_obj_t *obj20;
+    lv_obj_t *obj20__control_left;
+    lv_obj_t *obj20__control_up;
+    lv_obj_t *obj20__control_down;
+    lv_obj_t *obj20__obj0;
     lv_obj_t *test_button;
     lv_obj_t *test_button_2;
     lv_obj_t *test_button_3;
     lv_obj_t *test_button_4;
-    lv_obj_t *obj17;
-    lv_obj_t *obj18;
-    lv_obj_t *obj19;
-    lv_obj_t *obj20;
     lv_obj_t *obj21;
     lv_obj_t *obj22;
     lv_obj_t *obj23;
@@ -117,22 +137,22 @@ typedef struct _objects_t {
     lv_obj_t *obj27;
     lv_obj_t *obj28;
     lv_obj_t *obj29;
-    lv_obj_t *swithc_orientation0;
-    lv_obj_t *swithc_orientation180;
     lv_obj_t *obj30;
     lv_obj_t *obj31;
     lv_obj_t *obj32;
     lv_obj_t *obj33;
+    lv_obj_t *swithc_orientation0;
+    lv_obj_t *swithc_orientation180;
     lv_obj_t *obj34;
     lv_obj_t *obj35;
-    lv_obj_t *switch_master;
-    lv_obj_t *switch_slave1;
-    lv_obj_t *switch_slave2;
-    lv_obj_t *switch_slave3;
     lv_obj_t *obj36;
     lv_obj_t *obj37;
     lv_obj_t *obj38;
     lv_obj_t *obj39;
+    lv_obj_t *switch_master;
+    lv_obj_t *switch_slave1;
+    lv_obj_t *switch_slave2;
+    lv_obj_t *switch_slave3;
     lv_obj_t *obj40;
     lv_obj_t *obj41;
     lv_obj_t *obj42;
@@ -161,11 +181,11 @@ typedef struct _objects_t {
     lv_obj_t *obj65;
     lv_obj_t *obj66;
     lv_obj_t *obj67;
-    lv_obj_t *message_list;
     lv_obj_t *obj68;
     lv_obj_t *obj69;
     lv_obj_t *obj70;
     lv_obj_t *obj71;
+    lv_obj_t *message_list;
     lv_obj_t *obj72;
     lv_obj_t *obj73;
     lv_obj_t *obj74;
@@ -202,6 +222,12 @@ typedef struct _objects_t {
     lv_obj_t *obj105;
     lv_obj_t *obj106;
     lv_obj_t *obj107;
+    lv_obj_t *obj108;
+    lv_obj_t *obj109;
+    lv_obj_t *obj110;
+    lv_obj_t *obj111;
+    lv_obj_t *obj112;
+    lv_obj_t *obj113;
 } objects_t;
 
 extern objects_t objects;
@@ -220,6 +246,7 @@ enum ScreensEnum {
     SCREEN_ID_WINDOW_SETTING_MODE = 11,
     SCREEN_ID_WINDOW_SETTING_MODE_CHANGE = 12,
     SCREEN_ID_TST = 13,
+    SCREEN_ID_WINDOW_DATA_CUSTOM = 14,
 };
 
 void create_screen_main();
@@ -261,6 +288,9 @@ void tick_screen_window_setting_mode_change();
 void create_screen_tst();
 void tick_screen_tst();
 
+void create_screen_window_data_custom();
+void tick_screen_window_data_custom();
+
 void create_user_widget_controls_bottom(lv_obj_t *parent_obj, void *flowState, int startWidgetIndex);
 void tick_user_widget_controls_bottom(void *flowState, int startWidgetIndex);
 
@@ -290,6 +320,9 @@ void tick_user_widget_controls_top(void *flowState, int startWidgetIndex);
 
 void create_user_widget_spacer(lv_obj_t *parent_obj, void *flowState, int startWidgetIndex);
 void tick_user_widget_spacer(void *flowState, int startWidgetIndex);
+
+void create_user_widget_data_custom(lv_obj_t *parent_obj, void *flowState, int startWidgetIndex);
+void tick_user_widget_data_custom(void *flowState, int startWidgetIndex);
 
 void tick_screen_by_id(enum ScreensEnum screenId);
 void tick_screen(int screen_index);
