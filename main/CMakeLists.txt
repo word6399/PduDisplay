@@ -4,6 +4,7 @@ idf_component_register(SRCS ${SRC_UI} "main.cpp"
             "DataList.cpp"
             "ModbusControls.cpp"
             "ModbusSlave/ModbusSlave.cpp"
+            "Display.cpp"
                        INCLUDE_DIRS "." "ui")
 
 set(image ../data)
