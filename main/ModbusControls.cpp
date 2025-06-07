@@ -445,7 +445,7 @@ void ModbusControls::init()
     
   };
   int intr_alloc_flags = 0;
-  uart_driver_install((uart_port_t)1, 1024 * 2, 0, 0, NULL, intr_alloc_flags);
+  uart_driver_install((uart_port_t)1, 1024 * 2, 1024 * 2, 0, NULL, intr_alloc_flags);
   uart_param_config((uart_port_t)1, &uart_config);
   uart_set_pin((uart_port_t)1, 17, 39, 5, -1);
   uart_set_mode((uart_port_t)1, UART_MODE_RS485_HALF_DUPLEX);

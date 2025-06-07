@@ -33,7 +33,7 @@ typedef struct _objects_t {
     lv_obj_t *obj0;
     lv_obj_t *obj0__obj16;
     lv_obj_t *obj1;
-    lv_obj_t *obj1__obj20;
+    lv_obj_t *obj1__obj19;
     lv_obj_t *obj2;
     lv_obj_t *obj2__control_left;
     lv_obj_t *obj2__control_up;
@@ -43,7 +43,7 @@ typedef struct _objects_t {
     lv_obj_t *obj3__control_left_1;
     lv_obj_t *obj3__control_up_1;
     lv_obj_t *obj3__control_down_1;
-    lv_obj_t *obj3__obj19;
+    lv_obj_t *obj3__obj18;
     lv_obj_t *obj4;
     lv_obj_t *obj4__control_left;
     lv_obj_t *obj4__control_up;
@@ -110,7 +110,6 @@ typedef struct _objects_t {
     lv_obj_t *obj18__obj0;
     lv_obj_t *obj19;
     lv_obj_t *obj19__obj17;
-    lv_obj_t *obj19__obj18;
     lv_obj_t *obj20;
     lv_obj_t *obj20__control_left;
     lv_obj_t *obj20__control_up;

@@ -5,44 +5,24 @@
  */
 
  #include <Arduino.h>
-
  #include "ui/ui.h"
- #include <stdio.h>
- #include <unistd.h>
- #include <sys/lock.h>
- #include <sys/param.h>
- #include "freertos/FreeRTOS.h"
- #include "freertos/task.h"
- #include "esp_timer.h"
- #include "esp_lcd_panel_io.h"
- #include "esp_lcd_panel_vendor.h"
- #include "esp_lcd_panel_ops.h"
- #include "driver/gpio.h"
- #include "driver/spi_master.h"
- #include "esp_err.h"
- #include "esp_log.h"
- #include "lvgl.h"
- //#include "examp/ui.h"
+
 
 #include "Display.h"
 #include "About.h"
 
- 
 
- #include "esp_lcd_panel_st7789.h"
+#include "DataList.h"
+#include "ModbusControls.h"
 
- 
- #include "esp_lcd_touch_gt911.h"
- #include "driver/i2c_master.h"
- 
+#include "Conf.h"
 
 static const char *TAG = "example";
 
 // Using SPI2 in the example
 
 
-#include "DataList.h"
-#include "ModbusControls.h"
+
 
 void Task1code( void * pvParameters );
 TaskHandle_t Task1;
@@ -247,10 +227,10 @@ void initAbout()
     addElement(objects.system_about, data.c_str());
 }
 
-void addDataRelay(lv_obj_t * parent, const char* text, uint16_t *value)
+void addDataRelay(lv_obj_t * parent, const char* text, float *value)
 {
     lv_obj_t * btn = lv_button_create( parent );
-    lv_obj_set_size (btn, LV_PCT(100), 33);    
+    lv_obj_set_size (btn, LV_PCT(100), 34);    
     
     lv_obj_set_style_bg_opa(btn, 0, 0);
     lv_obj_clear_flag(btn, LV_OBJ_FLAG_CLICKABLE);
@@ -268,43 +248,81 @@ void addDataRelay(lv_obj_t * parent, const char* text, uint16_t *value)
 
 }
 
-void addDataDisplay(lv_obj_t * parent, const char* text, uint16_t *value)
+typedef struct 
+{
+    float *value;
+    lv_obj_t *label;
+    int prec;
+} t_watch;
+
+std::vector<t_watch> wath;
+
+
+void addDataDisplay(lv_obj_t * parent, const char* text, float *value, const char * meas, int prec =0)
 {
     lv_obj_t *obj = lv_obj_create( parent );
-    lv_obj_set_size (obj, LV_PCT(100), 65); 
+    lv_obj_set_style_bg_opa(obj, 0, 0);
+    lv_obj_set_style_pad_all(obj, 0, 0);
+    lv_obj_set_style_border_width(obj, 0, 0);
+    lv_obj_set_size (obj, LV_PCT(100), 68); 
 
     lv_obj_t *label_name = lv_label_create( obj );
-    lv_label_set_text(label_name, "Напряжение");
+    lv_label_set_text(label_name, text);
     lv_obj_set_style_text_font(label_name, &ui_font_nunito_bold_18, 0);
     lv_obj_set_align(label_name, LV_ALIGN_TOP_MID);
-    // {
-    //     lv_obj_t *container = lv_obj_create( obj );
-    //     lv_obj_set_layout(container, LV_LAYOUT_FLEX);
-    //     lv_obj_set_align(container, LV_ALIGN_TOP_MID);
+    {
+        lv_obj_t *container = lv_obj_create( obj );
+        lv_obj_set_style_bg_opa(container, 0, 0);
+        lv_obj_set_style_pad_all(container, 0, 0);
+        lv_obj_set_style_pad_top(container, 20, 0);
+        lv_obj_set_size(container, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+        lv_obj_set_style_border_width(container, 0, 0);
+        lv_obj_set_layout(container, LV_LAYOUT_FLEX);
+        lv_obj_set_align(container, LV_ALIGN_TOP_MID);
 
-    //     lv_obj_t *label_value = lv_label_create( container );
-    //     lv_obj_set_style_text_font(label_value, &ui_font_nunito_bold_46, 0);
-    //     lv_label_set_text(label_value, "220");
+        lv_obj_t *label_value = lv_label_create( container );
+        lv_obj_set_style_text_font(label_value, &ui_font_nunito_bold_46, 0);
+        lv_label_set_text_fmt(label_value, String(*value, prec).c_str());
 
-    //     lv_obj_t *label_meas = lv_label_create(container);
-    //     lv_obj_set_style_text_font(label_meas, &ui_font_nunito_bold_18, 0);
-    //     lv_label_set_text(label_meas, "\nВ");
-    // }
+        lv_obj_t *label_meas = lv_label_create(container);
+        lv_obj_set_style_text_font(label_meas, &ui_font_nunito_bold_18, 0);
+        lv_label_set_text_fmt(label_meas, "\n%s", meas);
+
+        t_watch node;
+        node.label = label_value;
+        node.value = value;
+        node.prec = prec;
+
+        wath.push_back(node);
+    }
     
 }
 
 void initData()
 {
-    //lv_obj_clean(objects.data_data); // Нужно потом раскоментировать
-    uint16_t tmp;
-    
-    //addDataRelay(objects.data_data, "L1 Выход 1:", &tmp);
-    //addDataRelay(objects.data_data, "L2 Выход 1:", &tmp);
-    //addDataRelay(objects.data_data, "L3 Выход 1:", &tmp);
-    //addDataRelay(objects.data_data, "L4 Выход 1:", &tmp);
-    //addDataRelay(objects.data_data, "L5 Выход 1:", &tmp);
+    lv_obj_clean(objects.data_data); // Нужно потом раскоментировать
+    float tmp = 219;
 
-    addDataDisplay(objects.data_data,"L1", &tmp );
+    auto list = dataList.displayData();
+
+    for(auto node: *list){
+        float *ptr = &dataList.getById(node.id)->dataF;
+        if(node.input)
+            addDataRelay(objects.data_data, node.name.c_str(), ptr);
+        else 
+            addDataDisplay(objects.data_data, node.name.c_str(), ptr, node.meas.c_str(), node.pric);
+    }
+    
+    // addDataRelay(objects.data_data, "L1 Выход", &tmp);
+    // dataList.getById(5)->dataF = 5;
+    // addDataDisplay(objects.data_data,"Напряжение", &dataList.getById(5)->dataF , "В");
+    // addDataDisplay(objects.data_data,"Ток", &dataList.getById(1)->dataF , "А", 1);
+    // addDataDisplay(objects.data_data,"Мощность", &dataList.getById(8)->dataF , "кВт", 2);
+
+    // addDataRelay(objects.data_data, "L2 Выход", &tmp);
+    // addDataDisplay(objects.data_data,"Напряжение", &dataList.getById(6)->dataF , "В");
+    // addDataDisplay(objects.data_data,"Ток", &dataList.getById(2)->dataF , "А", 1);
+    // addDataDisplay(objects.data_data,"Мощность", &dataList.getById(9)->dataF , "кВт", 2);
     
 }
 
@@ -314,6 +332,7 @@ void setup()
     Serial.begin(115200);
 
     dataList.init();
+    conf.init();
 
     disp.init();
     ui_init();
@@ -356,28 +375,39 @@ void Task1code( void * pvParameters ){
   }
 
 int counter =0;
+
+void update_wath()
+{
+    for(auto val: wath){
+        
+        lv_label_set_text(val.label, String(*val.value, val.prec).c_str());
+    }
+    //
+}
 void loop()
 {
     ui_tick();
     lv_timer_handler();
     lv_tick_inc(1);
 
-    set_var_volt1(dataList.getById(5)->dataF);
-    set_var_volt2(dataList.getById(6)->dataF);
-    set_var_volt3(dataList.getById(7)->dataF);
+    update_wath();
 
-    set_var_cur1(dataList.getById(1)->dataF);
-    set_var_cur2(dataList.getById(2)->dataF);
-    set_var_cur3(dataList.getById(3)->dataF);
+    // set_var_volt1(dataList.getById(5)->dataF);
+    // set_var_volt2(dataList.getById(6)->dataF);
+    // set_var_volt3(dataList.getById(7)->dataF);
 
-    set_var_pow1(dataList.getById(8)->dataF);
-    set_var_pow2(dataList.getById(9)->dataF);
-    set_var_pow3(dataList.getById(10)->dataF);
+    // set_var_cur1(dataList.getById(1)->dataF);
+    // set_var_cur2(dataList.getById(2)->dataF);
+    // set_var_cur3(dataList.getById(3)->dataF);
 
-    set_var_cur_all(dataList.getById(4)->dataF);
-    set_var_pow_all(dataList.getById(11)->dataF);
+    // set_var_pow1(dataList.getById(8)->dataF);
+    // set_var_pow2(dataList.getById(9)->dataF);
+    // set_var_pow3(dataList.getById(10)->dataF);
+
+    // set_var_cur_all(dataList.getById(4)->dataF);
+    // set_var_pow_all(dataList.getById(11)->dataF);
     // 
-    // counter++;
+    counter++;
     // if(counter >1000){
     //     counter =0;
     //     Serial.println("update: " + String(millis()));

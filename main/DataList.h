@@ -25,6 +25,16 @@ typedef struct nodeTypeDef {
   //struct nodeTypeDef * nextNode;
 } nodeTypeDef;
 
+typedef struct {
+  uint16_t id;
+  String name;
+  String meas;
+  int pric;
+  bool input;
+} displayDataTypeDef;
+
+const char displayDataFile[] = "/conf/display.ini";
+
 
 class DataList
 {
@@ -35,6 +45,11 @@ public:
     ~DataList();
 
     void init();
+
+    void initDisplayData();
+    void saveDisplayData();
+
+    std::vector<displayDataTypeDef>  *displayData(); 
 
     void createNode(uint16_t index, String data);
 
@@ -64,6 +79,7 @@ private:
     nodeTypeDef * nodeList;
 
     std::vector<nodeTypeDef*> listExecute;
+    std::vector<displayDataTypeDef> m_displayData;
     std::list<String> displayFiles;
     std::vector<String> messageList;
     bool displayLock = false;

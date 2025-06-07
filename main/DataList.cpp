@@ -53,6 +53,36 @@ void DataList::init()
 
     Serial.print("End Create List node cnt- ");
     Serial.println(len);
+
+    initDisplayData();
+}
+
+void DataList::initDisplayData()
+{
+    File file = FileFS.open(displayDataFile);
+    DynamicJsonDocument doc(64*1024);
+    deserializeJson(doc, file);
+
+    for(int i=0; i<doc.size(); i++)
+    {
+        displayDataTypeDef node;
+        node.id     = doc[i]["UnitID"];
+        node.name   = doc[i]["name"].as<String>();        
+        node.pric   = doc[i]["pric"];
+        node.meas   = doc[i]["meas"].as<String>();
+        node.input  = doc[i]["input"];
+        m_displayData.push_back(node);
+    }    
+}
+
+void DataList::saveDisplayData()
+{
+
+}
+
+std::vector<displayDataTypeDef> *DataList::displayData()
+{
+    return &m_displayData;
 }
 
 void DataList::createNode(uint16_t index, String data)

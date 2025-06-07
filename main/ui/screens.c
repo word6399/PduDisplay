@@ -3585,7 +3585,7 @@ void create_screen_window_data_custom() {
                     lv_obj_t *obj = lv_obj_create(parent_obj);
                     objects.obj19 = obj;
                     lv_obj_set_pos(obj, 0, 0);
-                    lv_obj_set_size(obj, 236, 100);
+                    lv_obj_set_size(obj, 236, 236);
                     lv_obj_set_style_pad_left(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
                     lv_obj_set_style_pad_top(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
                     lv_obj_set_style_pad_right(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -3607,7 +3607,7 @@ void create_screen_window_data_custom() {
             lv_obj_set_style_pad_bottom(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_obj_set_style_bg_opa(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_obj_set_style_border_width(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-            create_user_widget_controls_bottom(obj, getFlowState(flowState, 6), 96);
+            create_user_widget_controls_bottom(obj, getFlowState(flowState, 6), 95);
         }
     }
     
@@ -3618,7 +3618,7 @@ void tick_screen_window_data_custom() {
     void *flowState = getFlowState(0, 13);
     (void)flowState;
     tick_user_widget_data_custom(getFlowState(flowState, 5), 93);
-    tick_user_widget_controls_bottom(getFlowState(flowState, 6), 96);
+    tick_user_widget_controls_bottom(getFlowState(flowState, 6), 95);
 }
 
 void create_user_widget_controls_bottom(lv_obj_t *parent_obj, void *flowState, int startWidgetIndex) {
@@ -4462,12 +4462,11 @@ void create_user_widget_data_custom(lv_obj_t *parent_obj, void *flowState, int s
                 lv_obj_t *parent_obj = obj;
                 {
                     lv_obj_t *obj = lv_label_create(parent_obj);
-                    ((lv_obj_t **)&objects)[startWidgetIndex + 1] = obj;
                     lv_obj_set_pos(obj, 0, 0);
                     lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
                     add_style_label_font(obj);
                     lv_obj_set_style_text_font(obj, &ui_font_nunito_bold_46, LV_PART_MAIN | LV_STATE_DEFAULT);
-                    lv_label_set_text(obj, "");
+                    lv_label_set_text(obj, "2.22");
                 }
                 {
                     lv_obj_t *obj = lv_label_create(parent_obj);
@@ -4484,15 +4483,6 @@ void create_user_widget_data_custom(lv_obj_t *parent_obj, void *flowState, int s
 void tick_user_widget_data_custom(void *flowState, int startWidgetIndex) {
     (void)flowState;
     (void)startWidgetIndex;
-    {
-        const char *new_val = evalTextProperty(flowState, 13, 3, "Failed to evaluate Text in Label widget");
-        const char *cur_val = lv_label_get_text(((lv_obj_t **)&objects)[startWidgetIndex + 1]);
-        if (strcmp(new_val, cur_val) != 0) {
-            tick_value_change_obj = ((lv_obj_t **)&objects)[startWidgetIndex + 1];
-            lv_label_set_text(((lv_obj_t **)&objects)[startWidgetIndex + 1], new_val);
-            tick_value_change_obj = NULL;
-        }
-    }
 }
 
 void create_user_widget_controls_right(lv_obj_t *parent_obj, void *flowState, int startWidgetIndex) {
@@ -4596,7 +4586,7 @@ void ui_create_groups() {
 }
 
 static const char *screen_names[] = { "Main", "window_data", "window_notify", "window_notify_mesagge", "window_system", "window_setting", "window_setting_net", "window_setting_net_change", "window_setting_display", "window_setting_display_change", "window_setting_mode", "window_setting_mode_change", "tst", "window_data_custom" };
-static const char *object_names[] = { "main", "window_data", "window_notify", "window_notify_mesagge", "window_system", "window_setting", "window_setting_net", "window_setting_net_change", "window_setting_display", "window_setting_display_change", "window_setting_mode", "window_setting_mode_change", "tst", "window_data_custom", "obj0", "obj0__obj16", "obj1", "obj1__obj20", "obj2", "obj2__control_left", "obj2__control_up", "obj2__control_down", "obj2__obj0", "obj3", "obj3__control_left_1", "obj3__control_up_1", "obj3__control_down_1", "obj3__obj19", "obj4", "obj4__control_left", "obj4__control_up", "obj4__control_down", "obj4__obj0", "obj5", "obj5__control_left", "obj5__control_up", "obj5__control_down", "obj5__obj0", "notification_clear", "notification_clear__obj0", "notification_clear__obj1", "notification_clear__obj2", "notification_clear__obj3", "obj6", "obj6__control_left", "obj6__control_up", "obj6__control_down", "obj6__obj0", "obj7", "obj7__control_left", "obj7__control_up", "obj7__control_down", "obj7__obj0", "obj8", "obj8__control_left", "obj8__control_up", "obj8__control_down", "obj8__obj0", "obj9", "obj9__control_left", "obj9__control_up", "obj9__control_down", "obj9__obj0", "obj10", "obj10__control_left", "obj10__control_up", "obj10__control_down", "obj10__obj0", "obj11", "obj12", "obj12__control_left", "obj12__control_up", "obj12__control_down", "obj12__obj0", "obj13", "obj14", "obj14__control_left", "obj14__control_up", "obj14__control_down", "obj14__obj0", "obj15", "obj16", "obj16__control_left", "obj16__control_up", "obj16__control_down", "obj16__obj0", "obj17", "obj18", "obj18__control_left", "obj18__control_up", "obj18__control_down", "obj18__obj0", "obj19", "obj19__obj17", "obj19__obj18", "obj20", "obj20__control_left", "obj20__control_up", "obj20__control_down", "obj20__obj0", "test_button", "test_button_2", "test_button_3", "test_button_4", "obj21", "obj22", "obj23", "obj24", "obj25", "obj26", "obj27", "obj28", "obj29", "obj30", "obj31", "obj32", "obj33", "swithc_orientation0", "swithc_orientation180", "obj34", "obj35", "obj36", "obj37", "obj38", "obj39", "switch_master", "switch_slave1", "switch_slave2", "switch_slave3", "obj40", "obj41", "obj42", "obj43", "obj44", "obj45", "obj46", "obj47", "obj48", "obj49", "obj50", "obj51", "obj52", "obj53", "obj54", "obj55", "obj56", "obj57", "obj58", "obj59", "obj60", "obj61", "obj62", "obj63", "obj64", "obj65", "obj66", "obj67", "obj68", "obj69", "obj70", "obj71", "message_list", "obj72", "obj73", "obj74", "obj75", "obj76", "obj77", "obj78", "system_about", "obj79", "obj80", "obj81", "obj82", "obj83", "obj84", "obj85", "obj86", "obj87", "obj88", "obj89", "obj90", "obj91", "obj92", "obj93", "obj94", "obj95", "obj96", "obj97", "obj98", "obj99", "obj100", "obj101", "obj102", "obj103", "obj104", "obj105", "obj106", "obj107", "obj108", "obj109", "obj110", "data_data" };
+static const char *object_names[] = { "main", "window_data", "window_notify", "window_notify_mesagge", "window_system", "window_setting", "window_setting_net", "window_setting_net_change", "window_setting_display", "window_setting_display_change", "window_setting_mode", "window_setting_mode_change", "tst", "window_data_custom", "obj0", "obj0__obj16", "obj1", "obj1__obj19", "obj2", "obj2__control_left", "obj2__control_up", "obj2__control_down", "obj2__obj0", "obj3", "obj3__control_left_1", "obj3__control_up_1", "obj3__control_down_1", "obj3__obj18", "obj4", "obj4__control_left", "obj4__control_up", "obj4__control_down", "obj4__obj0", "obj5", "obj5__control_left", "obj5__control_up", "obj5__control_down", "obj5__obj0", "notification_clear", "notification_clear__obj0", "notification_clear__obj1", "notification_clear__obj2", "notification_clear__obj3", "obj6", "obj6__control_left", "obj6__control_up", "obj6__control_down", "obj6__obj0", "obj7", "obj7__control_left", "obj7__control_up", "obj7__control_down", "obj7__obj0", "obj8", "obj8__control_left", "obj8__control_up", "obj8__control_down", "obj8__obj0", "obj9", "obj9__control_left", "obj9__control_up", "obj9__control_down", "obj9__obj0", "obj10", "obj10__control_left", "obj10__control_up", "obj10__control_down", "obj10__obj0", "obj11", "obj12", "obj12__control_left", "obj12__control_up", "obj12__control_down", "obj12__obj0", "obj13", "obj14", "obj14__control_left", "obj14__control_up", "obj14__control_down", "obj14__obj0", "obj15", "obj16", "obj16__control_left", "obj16__control_up", "obj16__control_down", "obj16__obj0", "obj17", "obj18", "obj18__control_left", "obj18__control_up", "obj18__control_down", "obj18__obj0", "obj19", "obj19__obj17", "obj20", "obj20__control_left", "obj20__control_up", "obj20__control_down", "obj20__obj0", "test_button", "test_button_2", "test_button_3", "test_button_4", "obj21", "obj22", "obj23", "obj24", "obj25", "obj26", "obj27", "obj28", "obj29", "obj30", "obj31", "obj32", "obj33", "swithc_orientation0", "swithc_orientation180", "obj34", "obj35", "obj36", "obj37", "obj38", "obj39", "switch_master", "switch_slave1", "switch_slave2", "switch_slave3", "obj40", "obj41", "obj42", "obj43", "obj44", "obj45", "obj46", "obj47", "obj48", "obj49", "obj50", "obj51", "obj52", "obj53", "obj54", "obj55", "obj56", "obj57", "obj58", "obj59", "obj60", "obj61", "obj62", "obj63", "obj64", "obj65", "obj66", "obj67", "obj68", "obj69", "obj70", "obj71", "message_list", "obj72", "obj73", "obj74", "obj75", "obj76", "obj77", "obj78", "system_about", "obj79", "obj80", "obj81", "obj82", "obj83", "obj84", "obj85", "obj86", "obj87", "obj88", "obj89", "obj90", "obj91", "obj92", "obj93", "obj94", "obj95", "obj96", "obj97", "obj98", "obj99", "obj100", "obj101", "obj102", "obj103", "obj104", "obj105", "obj106", "obj107", "obj108", "obj109", "obj110", "data_data" };
 static const char *group_names[] = { "notify_messages" };
 static const char *style_names[] = { "label_font", "setting buttons", "setting_panel" };
 
