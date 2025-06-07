@@ -3,7 +3,7 @@
 
 static const char *TAG = "Display";
 
-static bool example_notify_lvgl_flush_ready(esp_lcd_panel_io_handle_t panel_io, esp_lcd_panel_io_event_data_t *edata, void *user_ctx)
+static bool notify_lvgl_flush_ready(esp_lcd_panel_io_handle_t panel_io, esp_lcd_panel_io_event_data_t *edata, void *user_ctx)
 {
     lv_display_t *disp = (lv_display_t *)user_ctx;
     lv_display_flush_ready(disp);
@@ -12,9 +12,9 @@ static bool example_notify_lvgl_flush_ready(esp_lcd_panel_io_handle_t panel_io, 
 
 
 
-static void example_lvgl_flush_cb(lv_display_t *disp, const lv_area_t *area, uint8_t *px_map)
+static void lvgl_flush_cb(lv_display_t *disp, const lv_area_t *area, uint8_t *px_map)
 {
-    //example_lvgl_port_update_callback(disp);
+    //lvgl_port_update_callback(disp);
     esp_lcd_panel_handle_t panel_handle = (esp_lcd_panel_handle_t)lv_display_get_user_data(disp);
     int offsetx1 = area->x1;
     int offsetx2 = area->x2;
@@ -26,7 +26,7 @@ static void example_lvgl_flush_cb(lv_display_t *disp, const lv_area_t *area, uin
     esp_lcd_panel_draw_bitmap(panel_handle, offsetx1, offsety1, offsetx2 + 1, offsety2 + 1, px_map);
 }
 
-static void example_lvgl_touch_cb(lv_indev_t * indev, lv_indev_data_t * data)
+static void lvgl_touch_cb(lv_indev_t * indev, lv_indev_data_t * data)
 {
     uint16_t touchpad_x[1] = {0};
     uint16_t touchpad_y[1] = {0};
@@ -49,15 +49,6 @@ static void example_lvgl_touch_cb(lv_indev_t * indev, lv_indev_data_t * data)
     }
 }
 
-static void example_increase_lvgl_tick(void *arg)
-{
-    /* Tell LVGL how many milliseconds has elapsed */
-    lv_tick_inc(EXAMPLE_LVGL_TICK_PERIOD_MS);
-}
-
-
-
-
 Display::Display()
 {
 
@@ -70,54 +61,54 @@ Display::~Display()
 
 void Display::init()
 {
+    initDisplay();
+    initTouch();
+
+    Serial.println("after");
+}
+
+void Display::initDisplay()
+{
     ESP_LOGI(TAG, "Turn off LCD backlight");
     gpio_config_t bk_gpio_config = {
-        .pin_bit_mask = 1ULL << EXAMPLE_PIN_NUM_BK_LIGHT,
+        .pin_bit_mask = 1ULL << PIN_NUM_BK_LIGHT,
         .mode = GPIO_MODE_OUTPUT,
         
     };
     ESP_ERROR_CHECK(gpio_config(&bk_gpio_config));
-    gpio_set_level((gpio_num_t)EXAMPLE_PIN_NUM_BK_LIGHT, EXAMPLE_LCD_BK_LIGHT_OFF_LEVEL);
-
-   
-    
- 
+    ESP_ERROR_CHECK(gpio_set_level((gpio_num_t)PIN_NUM_BK_LIGHT, LCD_BK_LIGHT_OFF_LEVEL));
 
     ESP_LOGI(TAG, "Initialize SPI bus");
     spi_bus_config_t buscfg = {
-        .mosi_io_num = EXAMPLE_PIN_NUM_MOSI,
-        .miso_io_num = EXAMPLE_PIN_NUM_MISO,
-        .sclk_io_num = EXAMPLE_PIN_NUM_SCLK,
+        .mosi_io_num = PIN_NUM_MOSI,
+        .miso_io_num = PIN_NUM_MISO,
+        .sclk_io_num = PIN_NUM_SCLK,
         
         .quadwp_io_num = -1,
         .quadhd_io_num = -1,
-        .max_transfer_sz = EXAMPLE_LCD_H_RES * 80 * sizeof(uint16_t),
+        .max_transfer_sz = LCD_V_RES * 80 * sizeof(uint16_t),
     };
     ESP_ERROR_CHECK(spi_bus_initialize(LCD_HOST, &buscfg, SPI_DMA_CH_AUTO));
-
-    ESP_LOGI(TAG, "Install panel IO");
     esp_lcd_panel_io_handle_t io_handle = NULL;
     esp_lcd_panel_io_spi_config_t io_config = {
-        .cs_gpio_num = EXAMPLE_PIN_NUM_LCD_CS,
-        .dc_gpio_num = EXAMPLE_PIN_NUM_LCD_DC,
+        .cs_gpio_num = PIN_NUM_LCD_CS,
+        .dc_gpio_num = PIN_NUM_LCD_DC,
         .spi_mode = 0,
-        .pclk_hz = EXAMPLE_LCD_PIXEL_CLOCK_HZ,
+        .pclk_hz = LCD_PIXEL_CLOCK_HZ,
         .trans_queue_depth = 10,
-        .lcd_cmd_bits = EXAMPLE_LCD_CMD_BITS,
-        .lcd_param_bits = EXAMPLE_LCD_PARAM_BITS,
+        .lcd_cmd_bits = LCD_CMD_BITS,
+        .lcd_param_bits = LCD_PARAM_BITS,
         
     };
-    // Attach the LCD to the SPI bus
-    ESP_ERROR_CHECK(esp_lcd_new_panel_io_spi((esp_lcd_spi_bus_handle_t)LCD_HOST, &io_config, &io_handle));
 
-    
+    ESP_ERROR_CHECK(esp_lcd_new_panel_io_spi((esp_lcd_spi_bus_handle_t)LCD_HOST, &io_config, &io_handle));
     esp_lcd_panel_dev_config_t panel_config = {
-        .reset_gpio_num = EXAMPLE_PIN_NUM_LCD_RST,
+        .reset_gpio_num = PIN_NUM_LCD_RST,
         .rgb_ele_order = LCD_RGB_ELEMENT_ORDER_RGB,
         .bits_per_pixel = 16,
     };
 
-    esp_lcd_new_panel_st7789(io_handle, &panel_config, &panel_handle);
+    ESP_ERROR_CHECK(esp_lcd_new_panel_st7789(io_handle, &panel_config, &panel_handle));
 
     
     ESP_ERROR_CHECK(esp_lcd_panel_reset(panel_handle));
@@ -125,60 +116,37 @@ void Display::init()
     ESP_ERROR_CHECK(esp_lcd_panel_swap_xy(panel_handle, false));
     ESP_ERROR_CHECK(esp_lcd_panel_mirror(panel_handle, false, false));
     ESP_ERROR_CHECK(esp_lcd_panel_invert_color(panel_handle, true));
-
-    //panel_handle->mirror(panel_handle, true, false));    
-    //esp_lcd_panel_invert_color(panel_handle, true);
-    //esp_lcd_panel_mirror(panel_handle, false, true);
-
-    // user can flush pre-defined pattern to the screen before we turn on the screen or backlight
     ESP_ERROR_CHECK(esp_lcd_panel_disp_on_off(panel_handle, true));
-
-    ESP_LOGI(TAG, "Turn on LCD backlight");
     
 
     ESP_LOGI(TAG, "Initialize LVGL library");
     lv_init();
 
-    // create a lvgl display
-    display = lv_display_create(EXAMPLE_LCD_H_RES, EXAMPLE_LCD_V_RES);
+    
+    display = lv_display_create(LCD_H_RES, LCD_V_RES);
 
     // alloc draw buffers used by LVGL
     // it's recommended to choose the size of the draw buffer(s) to be at least 1/10 screen sized
-    size_t draw_buffer_sz = EXAMPLE_LCD_H_RES * EXAMPLE_LVGL_DRAW_BUF_LINES * sizeof(lv_color16_t);
+    size_t draw_buffer_sz = LCD_V_RES * LVGL_DRAW_BUF_LINES * sizeof(lv_color16_t);
 
     void *buf1 = spi_bus_dma_memory_alloc(LCD_HOST, draw_buffer_sz, 0);
     assert(buf1);
     void *buf2 = spi_bus_dma_memory_alloc(LCD_HOST, draw_buffer_sz, 0);
     assert(buf2);
-    // initialize LVGL draw buffers
     lv_display_set_buffers(display, buf1, buf2, draw_buffer_sz, LV_DISPLAY_RENDER_MODE_PARTIAL);
-    // associate the mipi panel handle to the display
     lv_display_set_user_data(display, panel_handle);
-    // set color depth
     lv_display_set_color_format(display, LV_COLOR_FORMAT_RGB565);
-    // set the callback which can copy the rendered image to an area of the display
-    lv_display_set_flush_cb(display, example_lvgl_flush_cb);
+    lv_display_set_flush_cb(display, lvgl_flush_cb);
 
-    //esp_lcd_panel_mirror(panel_handle, true, true);
-
-    //ESP_LOGI(TAG, "Install LVGL tick timer");
-    // Tick interface for LVGL (using esp_timer to generate 2ms periodic event)
-    // const esp_timer_create_args_t lvgl_tick_timer_args = {
-    //     .callback = &example_increase_lvgl_tick,
-    //     .name = "lvgl_tick"
-    // };
-    // esp_timer_handle_t lvgl_tick_timer = NULL;
-    // (esp_timer_create(&lvgl_tick_timer_args, &lvgl_tick_timer));
-    // ESP_ERROR_CHECK(esp_timer_start_periodic(lvgl_tick_timer, EXAMPLE_LVGL_TICK_PERIOD_MS * 1000));
-
-    ESP_LOGI(TAG, "Register io panel event callback for LVGL flush ready notification");
     const esp_lcd_panel_io_callbacks_t cbs = {
-        .on_color_trans_done = example_notify_lvgl_flush_ready,
+        .on_color_trans_done = notify_lvgl_flush_ready,
     };
     /* Register done callback */
     ESP_ERROR_CHECK(esp_lcd_panel_io_register_event_callbacks(io_handle, &cbs, display));
+}
 
-
+void Display::initTouch()
+{
     i2c_master_bus_handle_t i2c_bus = NULL;
     i2c_master_bus_config_t bus_config = {
         .i2c_port = (i2c_port_num_t)0,
@@ -209,8 +177,8 @@ void Display::init()
     ESP_ERROR_CHECK(esp_lcd_new_panel_io_i2c(i2c_bus, &tp_io_config, &tp_io_handle));
 
     esp_lcd_touch_config_t tp_cfg = {
-        .x_max = EXAMPLE_LCD_H_RES,
-        .y_max = EXAMPLE_LCD_V_RES,
+        .x_max = LCD_V_RES,
+        .y_max = LCD_V_RES,
         //.rst_gpio_num = (gpio_num_t)-1,
         //.int_gpio_num = (gpio_num_t)35,
         .levels = {
@@ -233,17 +201,13 @@ void Display::init()
     lv_indev_set_type(indev, LV_INDEV_TYPE_POINTER);
     lv_indev_set_display(indev, display);
     lv_indev_set_user_data(indev, tp);
-    lv_indev_set_read_cb(indev, example_lvgl_touch_cb);
+    lv_indev_set_read_cb(indev, lvgl_touch_cb);
 
 
     ESP_LOGI(TAG, "Create LVGL task");
-    //xTaskCreate(example_lvgl_port_task, "LVGL", EXAMPLE_LVGL_TASK_STACK_SIZE, NULL, EXAMPLE_LVGL_TASK_PRIORITY, NULL);
+    //xTaskCreate(lvgl_port_task, "LVGL", LVGL_TASK_STACK_SIZE, NULL, LVGL_TASK_PRIORITY, NULL);
 
     ESP_LOGI(TAG, "Display LVGL Meter Widget");
-    // Lock the mutex due to the LVGL APIs are not thread-safe
-    //_lock_acquire(&lvgl_api_lock);
-    Serial.println("after");
-    //CONFIG_LV_THEME_DEFAULT_DARK;
 }
 
 Display disp;

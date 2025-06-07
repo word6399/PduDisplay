@@ -7,7 +7,7 @@
 
 #define VERSION_MAJOR 1
 #define VERSION_MINOR 0
-#define VERSION_PATH  0
+#define VERSION_PATH  2
 
 #define COMPANU     "Soliton 1 NTOA"
 
@@ -26,6 +26,8 @@ public:
     uint32_t versionMinor();
     uint32_t versionPathr();
 
+    String versionStr();
+
     String companu();
 
     uint32_t serialNumber();
@@ -33,5 +35,7 @@ public:
 private:
 
 };
+
+extern About about;
 
 #endif

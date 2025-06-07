@@ -25,6 +25,8 @@
  //#include "examp/ui.h"
 
 #include "Display.h"
+#include "About.h"
+
  
 
  #include "esp_lcd_panel_st7789.h"
@@ -111,8 +113,8 @@ void set_var_setting_orientation(int32_t value) {
     setting_orientation = value;
 
     if(setting_orientation == 0){
-        esp_lcd_panel_mirror(panel_handle, false, false);
-        lv_display_set_rotation(display, LV_DISP_ROTATION_0);
+        esp_lcd_panel_mirror(disp.panel_handle, false, false);
+        lv_display_set_rotation(disp.display, LV_DISP_ROTATION_0);
 
         
 
@@ -123,8 +125,16 @@ void set_var_setting_orientation(int32_t value) {
             
         }
     } else {
-        esp_lcd_panel_mirror(panel_handle, true, true);
-        lv_display_set_rotation(display, LV_DISP_ROTATION_180);
+        esp_lcd_panel_mirror(disp.panel_handle, true, true);
+        lv_display_set_rotation(disp.display, LV_DISPLAY_ROTATION_90);
+        // lv_area_t area ={
+        //     .x1 = 0,
+        //     .y1 = 40,
+        //     .x2 = 240,        
+        //     .y2 = 280
+        // };
+
+        // lv_display_rotate_area(disp.display, &area);
 
         if (FileFS.exists("/display.ini")) {
             //FileFS
@@ -142,6 +152,8 @@ void set_var_setting_orientation(int32_t value) {
     Serial.println("go to rotate " + String(value));
 
     
+
+    
 }
 
 int32_t setting_orientation_not;
@@ -153,33 +165,6 @@ int32_t get_var_setting_orientation_not() {
 void set_var_setting_orientation_not(int32_t value) {
     Serial.println("go to rotate not " + String(value));
     setting_orientation_not = value;
-
-    // if(setting_orientation != 0){
-    //     esp_lcd_panel_mirror(panel_handle, false, false);
-    //     lv_display_set_rotation(display, LV_DISP_ROTATION_0);
-
-        
-
-    //     if (FileFS.exists("/display.ini")) {
-    //         //FileFS
-    //         FileFS.remove("/display.ini");
-    //     } else {
-            
-    //     }
-    // } else {
-    //     esp_lcd_panel_mirror(panel_handle, true, true);
-    //     lv_display_set_rotation(display, LV_DISP_ROTATION_180);
-
-    //     if (FileFS.exists("/display.ini")) {
-    //         //FileFS
-    //     } else {
-    //         File file =FileFS.open("/display.ini", FILE_WRITE);
-    //         uint8_t buf[] = "123";
-    //         file.write(buf,1);
-    //         file.close();
-    //     }
-
-    // }
 }
 
 
@@ -214,27 +199,119 @@ void action_add_message(lv_event_t *e) {
     bg_color.green  = 0x14;
     bg_color.blue   = 0x19;
     lv_obj_set_style_border_color(btn, bg_color, 0);
-    lv_obj_set_style_border_width(btn, 2, 0);
+    lv_obj_set_style_border_width(btn, 2, 0);    
+
+    //lv_style_set_bg_opa(btn, 0);    
+}
+void addElement(lv_obj_t * parent,const char* text)
+{
+    lv_obj_t * btn = lv_button_create( parent);
+    lv_obj_set_height(btn, 40);
+    lv_obj_set_width (btn, LV_PCT(100));    
+    lv_obj_set_style_bg_opa(btn, 0, 0);
+    lv_obj_clear_flag(btn, LV_OBJ_FLAG_CLICKABLE);
+
+    lv_obj_t *label = lv_label_create( btn );
+    lv_obj_set_align(label, LV_ALIGN_LEFT_MID);
+    lv_obj_set_style_text_font(label, &ui_font_nunito_bold_18, 0);
+    lv_label_set_text(label, text);      
+}
+
+
+void initAbout()
+{
+    //objects.system_about;
+    lv_obj_clean(objects.system_about);
+
 
     
+
+    String data;
+    data = "MFR: " + about.companu();
+    addElement(objects.system_about, data.c_str()); 
     
+    data = "FW Main: " + about.versionStr();
+    addElement(objects.system_about, data.c_str());
     
-    //lv_style_set_bg_opa(btn, 0);
+    data = "FW Display: " + about.versionStr();
+    addElement(objects.system_about, data.c_str());
+
+    data = "Date: " + about.date();
+    addElement(objects.system_about, data.c_str());
+
+    String str(about.serialNumber()); 
+    while (str.length() < 6) {
+        str = "0" + str;
+    }    
+    data = "SN: " + str.substring(0, 3) + " " + str.substring(3);;
+    addElement(objects.system_about, data.c_str());
+}
+
+void addDataRelay(lv_obj_t * parent, const char* text, uint16_t *value)
+{
+    lv_obj_t * btn = lv_button_create( parent );
+    lv_obj_set_size (btn, LV_PCT(100), 33);    
+    
+    lv_obj_set_style_bg_opa(btn, 0, 0);
+    lv_obj_clear_flag(btn, LV_OBJ_FLAG_CLICKABLE);
+
+    lv_obj_t *label = lv_label_create( btn );
+    lv_obj_set_style_text_font(label, &ui_font_nunito_bold_25, 0);
+    lv_obj_set_align(label, LV_ALIGN_LEFT_MID);
+    lv_label_set_text(label, text);     
+
+    lv_obj_t *swith = lv_switch_create(btn);
+    lv_obj_clear_flag(swith, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_add_state(swith, LV_STATE_CHECKED);
+    lv_obj_set_align(swith, LV_ALIGN_RIGHT_MID);
+    lv_obj_set_size(swith, 50, 25);
+
+}
+
+void addDataDisplay(lv_obj_t * parent, const char* text, uint16_t *value)
+{
+    lv_obj_t *obj = lv_obj_create( parent );
+    lv_obj_set_size (obj, LV_PCT(100), 65); 
+
+    lv_obj_t *label_name = lv_label_create( obj );
+    lv_label_set_text(label_name, "Напряжение");
+    lv_obj_set_style_text_font(label_name, &ui_font_nunito_bold_18, 0);
+    lv_obj_set_align(label_name, LV_ALIGN_TOP_MID);
+    // {
+    //     lv_obj_t *container = lv_obj_create( obj );
+    //     lv_obj_set_layout(container, LV_LAYOUT_FLEX);
+    //     lv_obj_set_align(container, LV_ALIGN_TOP_MID);
+
+    //     lv_obj_t *label_value = lv_label_create( container );
+    //     lv_obj_set_style_text_font(label_value, &ui_font_nunito_bold_46, 0);
+    //     lv_label_set_text(label_value, "220");
+
+    //     lv_obj_t *label_meas = lv_label_create(container);
+    //     lv_obj_set_style_text_font(label_meas, &ui_font_nunito_bold_18, 0);
+    //     lv_label_set_text(label_meas, "\nВ");
+    // }
+    
+}
+
+void initData()
+{
+    //lv_obj_clean(objects.data_data); // Нужно потом раскоментировать
+    uint16_t tmp;
+    
+    //addDataRelay(objects.data_data, "L1 Выход 1:", &tmp);
+    //addDataRelay(objects.data_data, "L2 Выход 1:", &tmp);
+    //addDataRelay(objects.data_data, "L3 Выход 1:", &tmp);
+    //addDataRelay(objects.data_data, "L4 Выход 1:", &tmp);
+    //addDataRelay(objects.data_data, "L5 Выход 1:", &tmp);
+
+    addDataDisplay(objects.data_data,"L1", &tmp );
     
 }
 
 
-
-
-
-// LVGL library is not thread-safe, this example will call LVGL APIs from different tasks, so use a mutex to protect it
-static _lock_t lvgl_api_lock;
-extern void example_lvgl_demo_ui(lv_disp_t *disp);
-
-
 void setup()
 {
-     Serial.begin(115200);
+    Serial.begin(115200);
 
     dataList.init();
 
@@ -247,21 +324,11 @@ void setup()
         set_var_setting_orientation(0);
     }
 
-    
-    
-    //example_lvgl_demo_ui(display);
-    //_lock_release(&lvgl_api_lock);
-
-    
-
-    gpio_set_level((gpio_num_t)EXAMPLE_PIN_NUM_BK_LIGHT, EXAMPLE_LCD_BK_LIGHT_ON_LEVEL);
+    gpio_set_level((gpio_num_t)PIN_NUM_BK_LIGHT, LCD_BK_LIGHT_ON_LEVEL);
 
     modBus.init();
-
-
-    set_var_current_date(__DATE__);
-
-    
+    initAbout();
+    initData();
     
 
     xTaskCreatePinnedToCore(
@@ -274,6 +341,7 @@ void setup()
         0);          // Указываем пин для данного ядра  
 
     Serial.println("start [rogram]");
+    
 }
 
 void Task1code( void * pvParameters ){

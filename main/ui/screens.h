@@ -33,25 +33,17 @@ typedef struct _objects_t {
     lv_obj_t *obj0;
     lv_obj_t *obj0__obj16;
     lv_obj_t *obj1;
-    lv_obj_t *obj1__control_left;
-    lv_obj_t *obj1__control_up;
-    lv_obj_t *obj1__control_down;
-    lv_obj_t *obj1__obj0;
+    lv_obj_t *obj1__obj20;
     lv_obj_t *obj2;
     lv_obj_t *obj2__control_left;
     lv_obj_t *obj2__control_up;
     lv_obj_t *obj2__control_down;
     lv_obj_t *obj2__obj0;
     lv_obj_t *obj3;
-    lv_obj_t *obj3__control_left;
-    lv_obj_t *obj3__control_up;
-    lv_obj_t *obj3__control_down;
-    lv_obj_t *obj3__obj0;
-    lv_obj_t *notification_clear;
-    lv_obj_t *notification_clear__obj0;
-    lv_obj_t *notification_clear__obj1;
-    lv_obj_t *notification_clear__obj2;
-    lv_obj_t *notification_clear__obj3;
+    lv_obj_t *obj3__control_left_1;
+    lv_obj_t *obj3__control_up_1;
+    lv_obj_t *obj3__control_down_1;
+    lv_obj_t *obj3__obj19;
     lv_obj_t *obj4;
     lv_obj_t *obj4__control_left;
     lv_obj_t *obj4__control_up;
@@ -62,6 +54,11 @@ typedef struct _objects_t {
     lv_obj_t *obj5__control_up;
     lv_obj_t *obj5__control_down;
     lv_obj_t *obj5__obj0;
+    lv_obj_t *notification_clear;
+    lv_obj_t *notification_clear__obj0;
+    lv_obj_t *notification_clear__obj1;
+    lv_obj_t *notification_clear__obj2;
+    lv_obj_t *notification_clear__obj3;
     lv_obj_t *obj6;
     lv_obj_t *obj6__control_left;
     lv_obj_t *obj6__control_up;
@@ -78,6 +75,10 @@ typedef struct _objects_t {
     lv_obj_t *obj8__control_down;
     lv_obj_t *obj8__obj0;
     lv_obj_t *obj9;
+    lv_obj_t *obj9__control_left;
+    lv_obj_t *obj9__control_up;
+    lv_obj_t *obj9__control_down;
+    lv_obj_t *obj9__obj0;
     lv_obj_t *obj10;
     lv_obj_t *obj10__control_left;
     lv_obj_t *obj10__control_up;
@@ -102,23 +103,14 @@ typedef struct _objects_t {
     lv_obj_t *obj16__control_down;
     lv_obj_t *obj16__obj0;
     lv_obj_t *obj17;
-    lv_obj_t *obj17__obj17;
-    lv_obj_t *obj17__obj18;
-    lv_obj_t *obj17__obj19;
-    lv_obj_t *obj17__obj20;
-    lv_obj_t *obj17__obj21;
     lv_obj_t *obj18;
-    lv_obj_t *obj18__obj17;
-    lv_obj_t *obj18__obj18;
-    lv_obj_t *obj18__obj19;
-    lv_obj_t *obj18__obj20;
-    lv_obj_t *obj18__obj21;
+    lv_obj_t *obj18__control_left;
+    lv_obj_t *obj18__control_up;
+    lv_obj_t *obj18__control_down;
+    lv_obj_t *obj18__obj0;
     lv_obj_t *obj19;
     lv_obj_t *obj19__obj17;
     lv_obj_t *obj19__obj18;
-    lv_obj_t *obj19__obj19;
-    lv_obj_t *obj19__obj20;
-    lv_obj_t *obj19__obj21;
     lv_obj_t *obj20;
     lv_obj_t *obj20__control_left;
     lv_obj_t *obj20__control_up;
@@ -193,6 +185,7 @@ typedef struct _objects_t {
     lv_obj_t *obj76;
     lv_obj_t *obj77;
     lv_obj_t *obj78;
+    lv_obj_t *system_about;
     lv_obj_t *obj79;
     lv_obj_t *obj80;
     lv_obj_t *obj81;
@@ -225,9 +218,7 @@ typedef struct _objects_t {
     lv_obj_t *obj108;
     lv_obj_t *obj109;
     lv_obj_t *obj110;
-    lv_obj_t *obj111;
-    lv_obj_t *obj112;
-    lv_obj_t *obj113;
+    lv_obj_t *data_data;
 } objects_t;
 
 extern objects_t objects;
@@ -323,6 +314,12 @@ void tick_user_widget_spacer(void *flowState, int startWidgetIndex);
 
 void create_user_widget_data_custom(lv_obj_t *parent_obj, void *flowState, int startWidgetIndex);
 void tick_user_widget_data_custom(void *flowState, int startWidgetIndex);
+
+void create_user_widget_controls_right(lv_obj_t *parent_obj, void *flowState, int startWidgetIndex);
+void tick_user_widget_controls_right(void *flowState, int startWidgetIndex);
+
+void create_user_widget_controls_left(lv_obj_t *parent_obj, void *flowState, int startWidgetIndex);
+void tick_user_widget_controls_left(void *flowState, int startWidgetIndex);
 
 void tick_screen_by_id(enum ScreensEnum screenId);
 void tick_screen(int screen_index);

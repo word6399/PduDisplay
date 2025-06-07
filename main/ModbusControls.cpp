@@ -103,8 +103,8 @@ void addMessage(String message){
   //eez_flow_set_screen();
 
   lv_event_cb_t handler =  [](lv_event_t * e){
-    lv_event_code_t code = lv_event_get_code(e);
 
+    lv_event_code_t code = lv_event_get_code(e);
     if(code == LV_EVENT_CLICKED){
         //loadScreen();
         //message.c_str();

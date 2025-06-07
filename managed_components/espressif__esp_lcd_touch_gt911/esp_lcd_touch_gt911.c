@@ -138,7 +138,6 @@ esp_err_t esp_lcd_touch_new_i2c_gt911(const esp_lcd_panel_io_handle_t io, const 
         ESP_GOTO_ON_ERROR(ret, err, TAG, "GT911 reset failed");
     }
 
-    
     /* Prepare pin for touch interrupt */
     if (esp_lcd_touch_gt911->config.int_gpio_num != GPIO_NUM_NC) {
         const gpio_config_t int_gpio_config = {
@@ -155,16 +154,11 @@ esp_err_t esp_lcd_touch_new_i2c_gt911(const esp_lcd_panel_io_handle_t io, const 
         }
     }
 
-    ESP_LOGI(TAG, "I2C addasdf 1");
-
     /* Read status and config info */
     ret = touch_gt911_read_cfg(esp_lcd_touch_gt911);
     ESP_GOTO_ON_ERROR(ret, err, TAG, "GT911 init failed");
 
     *out_touch = esp_lcd_touch_gt911;
-
-    ESP_LOGI(TAG, "I2C addasdf 1");
-    
 
 err:
     if (ret != ESP_OK) {
