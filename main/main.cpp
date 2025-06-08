@@ -106,7 +106,7 @@ void set_var_setting_orientation(int32_t value) {
         }
     } else {
         esp_lcd_panel_mirror(disp.panel_handle, true, true);
-        lv_display_set_rotation(disp.display, LV_DISPLAY_ROTATION_90);
+        lv_display_set_rotation(disp.display, LV_DISPLAY_ROTATION_180);
         // lv_area_t area ={
         //     .x1 = 0,
         //     .y1 = 40,
@@ -337,18 +337,45 @@ void setup()
     disp.init();
     ui_init();
 
-    if (FileFS.exists("/display.ini")) {
-        set_var_setting_orientation(1);
-    } else {
-        set_var_setting_orientation(0);
-    }
+    // if (FileFS.exists("/display.ini")) {
+    //     set_var_setting_orientation(1);
+    // } else {
+    //     set_var_setting_orientation(0);
+    // }
 
     gpio_set_level((gpio_num_t)PIN_NUM_BK_LIGHT, LCD_BK_LIGHT_ON_LEVEL);
 
     modBus.init();
     initAbout();
     initData();
+
+    ui_create_groups();
+    // uint32_t count = lv_group_get_obj_count(groups.win_rot90);
+
+    // for (uint32_t i = 0; i < count; i++)
+    // {
+    //     lv_obj_t *obj = lv_group_get_obj_by_index(groups.win_rot90, i);
+    //     lv_obj_set_style_transform_angle(obj, 900, 0);
+    //     lv_obj_set_x(obj, 240);
+    // }
+
+    lv_obj_set_style_transform_angle(objects.data_data, 900, 0);
+    lv_obj_set_x(objects.data_data, 240);
+
+    lv_obj_set_style_transform_angle(objects.panel_main, 900, 0);
+    lv_obj_set_x(objects.panel_main, 240);
+
+    lv_obj_set_style_transform_angle(objects.system_about, 900, 0);
+    lv_obj_set_x(objects.system_about, 240);
+
+    lv_obj_set_style_transform_angle(objects.message_list, 900, 0);
+    lv_obj_set_x(objects.message_list, 240);
+
+    lv_obj_set_style_transform_angle(objects.panel_setting, 900, 0);
+    lv_obj_set_x(objects.panel_setting, 240);
     
+
+
 
     xTaskCreatePinnedToCore(
         Task1code,   // Функция задачи. 
@@ -360,6 +387,13 @@ void setup()
         0);          // Указываем пин для данного ядра  
 
     Serial.println("start [rogram]");
+
+    //ui_tick();
+    //lv_timer_handler();
+    //lv_obj_set_x(lv_scr_act(), -40);
+
+    
+    //
     
 }
 
@@ -388,29 +422,18 @@ void loop()
 {
     ui_tick();
     lv_timer_handler();
+    
     lv_tick_inc(1);
+    //lv_obj_set_x(lv_scr_act(), 0);
 
     update_wath();
 
-    // set_var_volt1(dataList.getById(5)->dataF);
-    // set_var_volt2(dataList.getById(6)->dataF);
-    // set_var_volt3(dataList.getById(7)->dataF);
-
-    // set_var_cur1(dataList.getById(1)->dataF);
-    // set_var_cur2(dataList.getById(2)->dataF);
-    // set_var_cur3(dataList.getById(3)->dataF);
-
-    // set_var_pow1(dataList.getById(8)->dataF);
-    // set_var_pow2(dataList.getById(9)->dataF);
-    // set_var_pow3(dataList.getById(10)->dataF);
-
-    // set_var_cur_all(dataList.getById(4)->dataF);
-    // set_var_pow_all(dataList.getById(11)->dataF);
-    // 
     counter++;
-    // if(counter >1000){
-    //     counter =0;
-    //     Serial.println("update: " + String(millis()));
-    // }
-    // delay(1);
+    if(counter >1000){
+        counter =0;
+        //Serial.printf("width: %d, height: %d\n", (int)lv_obj_get_width(lv_scr_act()), (int)lv_obj_get_height(lv_scr_act()));
+        uint32_t count = lv_group_get_obj_count(groups.win_rot90);
+        Serial.printf("Group size: %d\n", (int)count);
+    }
+    delay(1);
 }

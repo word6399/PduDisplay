@@ -8,7 +8,8 @@ extern "C" {
 #endif
 
 typedef struct _groups_t {
-    lv_group_t *notify_messages;
+    lv_group_t *setting_rotate;
+    lv_group_t *win_rot90;
 } groups_t;
 
 extern groups_t groups;
@@ -28,22 +29,30 @@ typedef struct _objects_t {
     lv_obj_t *window_setting_display_change;
     lv_obj_t *window_setting_mode;
     lv_obj_t *window_setting_mode_change;
-    lv_obj_t *tst;
     lv_obj_t *window_data_custom;
+    lv_obj_t *tst;
     lv_obj_t *obj0;
     lv_obj_t *obj0__obj16;
     lv_obj_t *obj1;
-    lv_obj_t *obj1__obj19;
+    lv_obj_t *obj1__control_left;
+    lv_obj_t *obj1__control_up;
+    lv_obj_t *obj1__control_down;
+    lv_obj_t *obj1__obj0;
     lv_obj_t *obj2;
     lv_obj_t *obj2__control_left;
     lv_obj_t *obj2__control_up;
     lv_obj_t *obj2__control_down;
     lv_obj_t *obj2__obj0;
     lv_obj_t *obj3;
-    lv_obj_t *obj3__control_left_1;
-    lv_obj_t *obj3__control_up_1;
-    lv_obj_t *obj3__control_down_1;
-    lv_obj_t *obj3__obj18;
+    lv_obj_t *obj3__control_left;
+    lv_obj_t *obj3__control_up;
+    lv_obj_t *obj3__control_down;
+    lv_obj_t *obj3__obj0;
+    lv_obj_t *notification_clear;
+    lv_obj_t *notification_clear__obj0;
+    lv_obj_t *notification_clear__obj1;
+    lv_obj_t *notification_clear__obj2;
+    lv_obj_t *notification_clear__obj3;
     lv_obj_t *obj4;
     lv_obj_t *obj4__control_left;
     lv_obj_t *obj4__control_up;
@@ -54,11 +63,6 @@ typedef struct _objects_t {
     lv_obj_t *obj5__control_up;
     lv_obj_t *obj5__control_down;
     lv_obj_t *obj5__obj0;
-    lv_obj_t *notification_clear;
-    lv_obj_t *notification_clear__obj0;
-    lv_obj_t *notification_clear__obj1;
-    lv_obj_t *notification_clear__obj2;
-    lv_obj_t *notification_clear__obj3;
     lv_obj_t *obj6;
     lv_obj_t *obj6__control_left;
     lv_obj_t *obj6__control_up;
@@ -75,10 +79,6 @@ typedef struct _objects_t {
     lv_obj_t *obj8__control_down;
     lv_obj_t *obj8__obj0;
     lv_obj_t *obj9;
-    lv_obj_t *obj9__control_left;
-    lv_obj_t *obj9__control_up;
-    lv_obj_t *obj9__control_down;
-    lv_obj_t *obj9__obj0;
     lv_obj_t *obj10;
     lv_obj_t *obj10__control_left;
     lv_obj_t *obj10__control_up;
@@ -103,22 +103,18 @@ typedef struct _objects_t {
     lv_obj_t *obj16__control_down;
     lv_obj_t *obj16__obj0;
     lv_obj_t *obj17;
+    lv_obj_t *obj17__obj17;
     lv_obj_t *obj18;
     lv_obj_t *obj18__control_left;
     lv_obj_t *obj18__control_up;
     lv_obj_t *obj18__control_down;
     lv_obj_t *obj18__obj0;
-    lv_obj_t *obj19;
-    lv_obj_t *obj19__obj17;
-    lv_obj_t *obj20;
-    lv_obj_t *obj20__control_left;
-    lv_obj_t *obj20__control_up;
-    lv_obj_t *obj20__control_down;
-    lv_obj_t *obj20__obj0;
     lv_obj_t *test_button;
     lv_obj_t *test_button_2;
     lv_obj_t *test_button_3;
     lv_obj_t *test_button_4;
+    lv_obj_t *obj19;
+    lv_obj_t *obj20;
     lv_obj_t *obj21;
     lv_obj_t *obj22;
     lv_obj_t *obj23;
@@ -130,20 +126,24 @@ typedef struct _objects_t {
     lv_obj_t *obj29;
     lv_obj_t *obj30;
     lv_obj_t *obj31;
-    lv_obj_t *obj32;
-    lv_obj_t *obj33;
     lv_obj_t *swithc_orientation0;
     lv_obj_t *swithc_orientation180;
+    lv_obj_t *swithc_orientation180_1;
+    lv_obj_t *swithc_orientation180_2;
+    lv_obj_t *obj32;
+    lv_obj_t *obj33;
     lv_obj_t *obj34;
     lv_obj_t *obj35;
     lv_obj_t *obj36;
     lv_obj_t *obj37;
-    lv_obj_t *obj38;
-    lv_obj_t *obj39;
     lv_obj_t *switch_master;
     lv_obj_t *switch_slave1;
     lv_obj_t *switch_slave2;
     lv_obj_t *switch_slave3;
+    lv_obj_t *panel_main;
+    lv_obj_t *obj38;
+    lv_obj_t *obj39;
+    lv_obj_t *panel_data;
     lv_obj_t *obj40;
     lv_obj_t *obj41;
     lv_obj_t *obj42;
@@ -172,19 +172,20 @@ typedef struct _objects_t {
     lv_obj_t *obj65;
     lv_obj_t *obj66;
     lv_obj_t *obj67;
+    lv_obj_t *message_list;
     lv_obj_t *obj68;
     lv_obj_t *obj69;
     lv_obj_t *obj70;
     lv_obj_t *obj71;
-    lv_obj_t *message_list;
     lv_obj_t *obj72;
     lv_obj_t *obj73;
     lv_obj_t *obj74;
+    lv_obj_t *system_about;
     lv_obj_t *obj75;
     lv_obj_t *obj76;
     lv_obj_t *obj77;
     lv_obj_t *obj78;
-    lv_obj_t *system_about;
+    lv_obj_t *panel_setting;
     lv_obj_t *obj79;
     lv_obj_t *obj80;
     lv_obj_t *obj81;
@@ -214,9 +215,6 @@ typedef struct _objects_t {
     lv_obj_t *obj105;
     lv_obj_t *obj106;
     lv_obj_t *obj107;
-    lv_obj_t *obj108;
-    lv_obj_t *obj109;
-    lv_obj_t *obj110;
     lv_obj_t *data_data;
 } objects_t;
 
@@ -235,8 +233,8 @@ enum ScreensEnum {
     SCREEN_ID_WINDOW_SETTING_DISPLAY_CHANGE = 10,
     SCREEN_ID_WINDOW_SETTING_MODE = 11,
     SCREEN_ID_WINDOW_SETTING_MODE_CHANGE = 12,
-    SCREEN_ID_TST = 13,
-    SCREEN_ID_WINDOW_DATA_CUSTOM = 14,
+    SCREEN_ID_WINDOW_DATA_CUSTOM = 13,
+    SCREEN_ID_TST = 14,
 };
 
 void create_screen_main();
@@ -275,11 +273,11 @@ void tick_screen_window_setting_mode();
 void create_screen_window_setting_mode_change();
 void tick_screen_window_setting_mode_change();
 
-void create_screen_tst();
-void tick_screen_tst();
-
 void create_screen_window_data_custom();
 void tick_screen_window_data_custom();
+
+void create_screen_tst();
+void tick_screen_tst();
 
 void create_user_widget_controls_bottom(lv_obj_t *parent_obj, void *flowState, int startWidgetIndex);
 void tick_user_widget_controls_bottom(void *flowState, int startWidgetIndex);

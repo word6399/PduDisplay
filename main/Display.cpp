@@ -117,6 +117,8 @@ void Display::initDisplay()
     ESP_ERROR_CHECK(esp_lcd_panel_mirror(panel_handle, false, false));
     ESP_ERROR_CHECK(esp_lcd_panel_invert_color(panel_handle, true));
     ESP_ERROR_CHECK(esp_lcd_panel_disp_on_off(panel_handle, true));
+
+    //esp_lcd_panel_set_gap(panel_handle, -40, 0);
     
 
     ESP_LOGI(TAG, "Initialize LVGL library");
@@ -124,6 +126,8 @@ void Display::initDisplay()
 
     
     display = lv_display_create(LCD_H_RES, LCD_V_RES);
+
+    
 
     // alloc draw buffers used by LVGL
     // it's recommended to choose the size of the draw buffer(s) to be at least 1/10 screen sized
@@ -137,6 +141,8 @@ void Display::initDisplay()
     lv_display_set_user_data(display, panel_handle);
     lv_display_set_color_format(display, LV_COLOR_FORMAT_RGB565);
     lv_display_set_flush_cb(display, lvgl_flush_cb);
+
+    //lv_disp_set_rotation(display, LV_DISPLAY_ROTATION_270);
 
     const esp_lcd_panel_io_callbacks_t cbs = {
         .on_color_trans_done = notify_lvgl_flush_ready,
