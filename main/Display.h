@@ -54,15 +54,17 @@ public:
 
     void init();
 
-    esp_lcd_panel_handle_t panel_handle = NULL;
-    lv_display_t *display;
+    void rotate180(uint8_t rotate);
+
+    
 
 private:
 
     void initDisplay();
     void initTouch();
 
-    
+    esp_lcd_panel_handle_t panel_handle = NULL;
+    lv_display_t *display;
 
 
 };

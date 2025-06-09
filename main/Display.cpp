@@ -67,6 +67,17 @@ void Display::init()
     Serial.println("after");
 }
 
+void Display::rotate180(uint8_t rotate)
+{
+    if(rotate){
+        esp_lcd_panel_mirror(disp.panel_handle, false, false);
+        lv_display_set_rotation(disp.display, LV_DISP_ROTATION_0);
+    } else {
+        esp_lcd_panel_mirror(disp.panel_handle, true, true);
+        lv_display_set_rotation(disp.display, LV_DISPLAY_ROTATION_180);
+    }
+}
+
 void Display::initDisplay()
 {
     ESP_LOGI(TAG, "Turn off LCD backlight");

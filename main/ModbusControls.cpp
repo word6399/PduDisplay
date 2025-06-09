@@ -129,7 +129,7 @@ uint8_t writeHolders(uint8_t fc, uint16_t address, uint16_t length)
 
     String data;
     char buf[length];
-    Serial.printf("adress %d, length %d\n", address, length);
+    //Serial.printf("adress %d, length %d\n", address, length);
 
     
     if(address < dataList.getNodeCount()){         
@@ -142,9 +142,9 @@ uint8_t writeHolders(uint8_t fc, uint16_t address, uint16_t length)
         ptr[1] = slave.readRegisterFromBuffer(i*2+1);
         i++;
 
-        Serial.printf("%f ", node->dataF);
+        //Serial.printf("%f ", node->dataF);
       }
-      Serial.printf("\n");
+      //Serial.printf("\n");
         // uint16_t data16[50];
         // for(int i=0; i<dataList.getNodeCount(); i++){
         //   data16[i] = slave.readRegisterFromBuffer(i);
@@ -228,7 +228,7 @@ uint8_t writeHolders(uint8_t fc, uint16_t address, uint16_t length)
               break;
       }
       set_var_net_mode(worckMode);
-      Serial.println("Mode: " + String(worckMode));
+      //Serial.println("Mode: " + String(worckMode));
       
       set_var_setting_mode(worckMode);
 

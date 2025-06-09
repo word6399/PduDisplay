@@ -93,20 +93,13 @@ void set_var_setting_orientation(int32_t value) {
     setting_orientation = value;
 
     if(setting_orientation == 0){
-        esp_lcd_panel_mirror(disp.panel_handle, false, false);
-        lv_display_set_rotation(disp.display, LV_DISP_ROTATION_0);
+        
 
         
 
-        if (FileFS.exists("/display.ini")) {
-            //FileFS
-            FileFS.remove("/display.ini");
-        } else {
-            
-        }
+       
     } else {
-        esp_lcd_panel_mirror(disp.panel_handle, true, true);
-        lv_display_set_rotation(disp.display, LV_DISPLAY_ROTATION_180);
+        
         // lv_area_t area ={
         //     .x1 = 0,
         //     .y1 = 40,
@@ -116,7 +109,7 @@ void set_var_setting_orientation(int32_t value) {
 
         // lv_display_rotate_area(disp.display, &area);
 
-        if (FileFS.exists("/display.ini")) {
+        if (FileFS.exists("/display_orientation.ini")) {
             //FileFS
         } else {
             File file =FileFS.open("/display.ini", FILE_WRITE);
@@ -313,17 +306,113 @@ void initData()
             addDataDisplay(objects.data_data, node.name.c_str(), ptr, node.meas.c_str(), node.pric);
     }
     
-    // addDataRelay(objects.data_data, "L1 Выход", &tmp);
-    // dataList.getById(5)->dataF = 5;
-    // addDataDisplay(objects.data_data,"Напряжение", &dataList.getById(5)->dataF , "В");
-    // addDataDisplay(objects.data_data,"Ток", &dataList.getById(1)->dataF , "А", 1);
-    // addDataDisplay(objects.data_data,"Мощность", &dataList.getById(8)->dataF , "кВт", 2);
+}
 
-    // addDataRelay(objects.data_data, "L2 Выход", &tmp);
-    // addDataDisplay(objects.data_data,"Напряжение", &dataList.getById(6)->dataF , "В");
-    // addDataDisplay(objects.data_data,"Ток", &dataList.getById(2)->dataF , "А", 1);
-    // addDataDisplay(objects.data_data,"Мощность", &dataList.getById(9)->dataF , "кВт", 2);
+std::vector<lv_obj_t *> rotate_list;
+
+void rotateWin(uint8_t rot){
+    // 0 - 0 grad
+    // 1 - 180 grad
+    // 2 - 90 grad
+    // 3 - 270 grad
+
+    int32_t rotate = 0;
+    int32_t shift = 0;
+    if(rot>1){
+        rotate = 900;
+        shift = 240;
+        
+        Serial.println("Rotate 90");
+    } else {
+        rotate = 0;
+        shift = 0;
+        Serial.println("Rotate 0");
+    }
+
+    if(rot%2){
+        disp.rotate180(0); // 0
+        Serial.println("Rotate 0");
+    } else {
+        disp.rotate180(1); // 180
+        Serial.println("Rotate 180");
+    }
+
+    for(auto val : rotate_list){
+        lv_obj_set_style_transform_angle(val, rotate, 0);
+        lv_obj_set_x(val, shift);
+    }        
+
+    File file =FileFS.open("/conf/display_orientation.ini", FILE_WRITE);
+    String str(rot);
+    file.write((uint8_t *)str.c_str(), str.length());
+    file.close();
+}
+
+std::vector<lv_obj_t *> switch_list;
+std::vector<lv_obj_t *> switch_change_list;
+void initSwithRotate()
+{
+    switch_list.push_back(objects.swithc_orientation_1);
+    switch_list.push_back(objects.swithc_orientation_2);
+    switch_list.push_back(objects.swithc_orientation_3);
+    switch_list.push_back(objects.swithc_orientation_4);
+
+    switch_change_list.push_back(objects.swithc_orientation_changed_1);
+    switch_change_list.push_back(objects.swithc_orientation_changed_2);
+    switch_change_list.push_back(objects.swithc_orientation_changed_3);
+    switch_change_list.push_back(objects.swithc_orientation_changed_4);
+
+    File file =FileFS.open("/conf/display_orientation.ini", FILE_READ);
+    String str = file.readString();
+    uint8_t rot = str.toInt();
+    file.close();
+
     
+
+    lv_obj_add_state( switch_list.at(rot), LV_STATE_CHECKED);
+    lv_obj_add_state( switch_change_list.at(rot), LV_STATE_CHECKED);
+    
+    
+
+    auto cb = [](lv_event_t * event){
+        // Снимаем нажатие
+        for(auto val: switch_change_list){
+            lv_obj_clear_state(val, LV_STATE_CHECKED);
+        } 
+        // Устанавливаем нажатие для текущего
+        lv_obj_t *obj = (lv_obj_t *)lv_event_get_target(event);
+        lv_obj_add_state(obj, LV_STATE_CHECKED);
+
+        // Поворачиваем экран
+        uint8_t *data = (uint8_t *)lv_event_get_user_data(event);
+        // 0 - 0, 1 - 180, 2 - 90, 3 - 270 
+        rotateWin( *data );
+
+        for(auto val: switch_list){
+            lv_obj_clear_state(val, LV_STATE_CHECKED);
+        } 
+        lv_obj_add_state(switch_list.at(*data), LV_STATE_CHECKED);
+    };
+
+    
+
+    for (size_t i = 0; i < switch_change_list.size(); i++)
+    {
+        lv_obj_add_event_cb(switch_change_list.at(i), cb ,LV_EVENT_CLICKED, new uint8_t(i));
+    }
+
+    //
+    Serial.println("read rotate: " + String(rot));
+
+    file =FileFS.open("/conf/display_orientation.ini", FILE_READ);
+
+    rotateWin(rot);
+    
+    Serial.println("file size: ");
+    Serial.println(file.size());
+    Serial.println("file: ");
+    Serial.println(str);
+
 }
 
 
@@ -349,7 +438,24 @@ void setup()
     initAbout();
     initData();
 
-    ui_create_groups();
+    rotate_list.push_back( objects.data_data );
+    rotate_list.push_back( objects.panel_main );
+    rotate_list.push_back( objects.system_about );
+    rotate_list.push_back( objects.message_list );
+    rotate_list.push_back( objects.panel_setting );
+    rotate_list.push_back( objects.panel_setting_net );
+    rotate_list.push_back( objects.panel_setting_net_change );
+    rotate_list.push_back( objects.panel_setting_display );
+    rotate_list.push_back( objects.panel_setting_display_changed );
+    rotate_list.push_back( objects.panel_setting_mode );
+    rotate_list.push_back( objects.panel_setting_mode_changed );
+
+
+    rotateWin(1);
+    initSwithRotate();
+
+
+    //ui_create_groups();
     // uint32_t count = lv_group_get_obj_count(groups.win_rot90);
 
     // for (uint32_t i = 0; i < count; i++)
@@ -359,20 +465,7 @@ void setup()
     //     lv_obj_set_x(obj, 240);
     // }
 
-    lv_obj_set_style_transform_angle(objects.data_data, 900, 0);
-    lv_obj_set_x(objects.data_data, 240);
-
-    lv_obj_set_style_transform_angle(objects.panel_main, 900, 0);
-    lv_obj_set_x(objects.panel_main, 240);
-
-    lv_obj_set_style_transform_angle(objects.system_about, 900, 0);
-    lv_obj_set_x(objects.system_about, 240);
-
-    lv_obj_set_style_transform_angle(objects.message_list, 900, 0);
-    lv_obj_set_x(objects.message_list, 240);
-
-    lv_obj_set_style_transform_angle(objects.panel_setting, 900, 0);
-    lv_obj_set_x(objects.panel_setting, 240);
+    
     
 
 
@@ -428,12 +521,12 @@ void loop()
 
     update_wath();
 
-    counter++;
-    if(counter >1000){
-        counter =0;
-        //Serial.printf("width: %d, height: %d\n", (int)lv_obj_get_width(lv_scr_act()), (int)lv_obj_get_height(lv_scr_act()));
-        uint32_t count = lv_group_get_obj_count(groups.win_rot90);
-        Serial.printf("Group size: %d\n", (int)count);
-    }
-    delay(1);
+    // counter++;
+    // if(counter >1000){
+    //     counter =0;
+    //     //Serial.printf("width: %d, height: %d\n", (int)lv_obj_get_width(lv_scr_act()), (int)lv_obj_get_height(lv_scr_act()));
+    //     uint32_t count = lv_group_get_obj_count(groups.setting_rotate);
+    //     Serial.printf("Group size: %d\n", (int)count);
+    // }
+    // delay(1);
 }
