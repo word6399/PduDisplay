@@ -70,6 +70,8 @@ extern int32_t get_var_setting_orientation_not();
 extern void set_var_setting_orientation_not(int32_t value);
 extern bool get_var_set_net_dhcp();
 extern void set_var_set_net_dhcp(bool value);
+extern int32_t get_var_control_rot2();
+extern void set_var_control_rot2(int32_t value);
 
 
 #ifdef __cplusplus

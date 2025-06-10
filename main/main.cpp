@@ -92,37 +92,7 @@ int32_t get_var_setting_orientation() {
 void set_var_setting_orientation(int32_t value) {
     setting_orientation = value;
 
-    if(setting_orientation == 0){
-        
-
-        
-
-       
-    } else {
-        
-        // lv_area_t area ={
-        //     .x1 = 0,
-        //     .y1 = 40,
-        //     .x2 = 240,        
-        //     .y2 = 280
-        // };
-
-        // lv_display_rotate_area(disp.display, &area);
-
-        if (FileFS.exists("/display_orientation.ini")) {
-            //FileFS
-        } else {
-            File file =FileFS.open("/display.ini", FILE_WRITE);
-            uint8_t buf[] = "123";
-            file.write(buf,1);
-            file.close();
-        }
-
-    }
-
-    set_var_setting_orientation_not(!value);
-
-    Serial.println("go to rotate " + String(value));
+  
 
     
 
@@ -323,10 +293,12 @@ void rotateWin(uint8_t rot){
         shift = 240;
         
         Serial.println("Rotate 90");
+        set_var_control_rot2( 2700 );
     } else {
         rotate = 0;
         shift = 0;
         Serial.println("Rotate 0");
+        set_var_control_rot2( 0 );
     }
 
     if(rot%2){
@@ -342,11 +314,55 @@ void rotateWin(uint8_t rot){
         lv_obj_set_x(val, shift);
     }        
 
-    File file =FileFS.open("/conf/display_orientation.ini", FILE_WRITE);
+    File file =FileFS.open("/conf/orientation.ini", FILE_WRITE);
     String str(rot);
     file.write((uint8_t *)str.c_str(), str.length());
     file.close();
 }
+
+void shift_up(lv_obj_t * list)
+{
+    uint16_t item_count = lv_obj_get_child_cnt(list);
+    if(item_count > 1) {
+        //
+        lv_obj_t * first_item = lv_obj_get_child(list, item_count-1);
+        lv_obj_move_to_index(first_item, 0);
+        //lv_obj_del(first_item);
+    }
+}
+
+void shift_down(lv_obj_t * list)
+{
+    uint16_t item_count = lv_obj_get_child_cnt(list);
+    if(item_count > 1) {
+        //
+        lv_obj_t * first_item = lv_obj_get_child(list, 0);
+        lv_obj_move_to_index(first_item, item_count-1);
+        //lv_obj_del(first_item);
+    }
+}
+void action_shift_data_up(lv_event_t *e) 
+{
+    shift_up(objects.data_data);
+    
+}
+
+void action_shift_data_down(lv_event_t *e) 
+{
+    shift_down(objects.data_data);
+}
+
+void action_shift_message_up(lv_event_t *e) {
+    Serial.println("up noty");
+    shift_up(objects.message_list);
+}
+
+void action_shift_message_down(lv_event_t *e) {
+    Serial.println("down noty");
+    shift_down(objects.message_list);
+}
+
+
 
 std::vector<lv_obj_t *> switch_list;
 std::vector<lv_obj_t *> switch_change_list;
@@ -362,7 +378,7 @@ void initSwithRotate()
     switch_change_list.push_back(objects.swithc_orientation_changed_3);
     switch_change_list.push_back(objects.swithc_orientation_changed_4);
 
-    File file =FileFS.open("/conf/display_orientation.ini", FILE_READ);
+    File file =FileFS.open("/conf/orientation.ini", FILE_READ);
     String str = file.readString();
     uint8_t rot = str.toInt();
     file.close();
@@ -415,6 +431,36 @@ void initSwithRotate()
 
 }
 
+void listDir(fs::FS &fs, const char *dirname, uint8_t levels) {
+  Serial.printf("Listing directory: %s\r\n", dirname);
+
+  File root = fs.open(dirname);
+  if (!root) {
+    Serial.println("- failed to open directory");
+    return;
+  }
+  if (!root.isDirectory()) {
+    Serial.println(" - not a directory");
+    return;
+  }
+
+  File file = root.openNextFile();
+  while (file) {
+    if (file.isDirectory()) {
+      Serial.print("  DIR : ");
+      Serial.println(file.name());
+      if (levels) {
+        listDir(fs, file.path(), levels - 1);
+      }
+    } else {
+      Serial.print("  FILE: ");
+      Serial.print(file.name());
+      Serial.print("\tSIZE: ");
+      Serial.println(file.size());
+    }
+    file = root.openNextFile();
+  }
+}
 
 void setup()
 {
@@ -422,6 +468,15 @@ void setup()
 
     dataList.init();
     conf.init();
+
+    listDir(FileFS, "/", 2);
+    
+    File file =FileFS.open("/conf/orientation.ini", FILE_READ);
+    Serial.println("=============================");
+    Serial.println("file: " + file.readString());
+    Serial.println(file.readString());
+    Serial.println("=============================");
+    file.close();
 
     disp.init();
     ui_init();
@@ -442,6 +497,8 @@ void setup()
     rotate_list.push_back( objects.panel_main );
     rotate_list.push_back( objects.system_about );
     rotate_list.push_back( objects.message_list );
+    rotate_list.push_back( objects.message_current );
+    rotate_list.push_back( objects.message_container );
     rotate_list.push_back( objects.panel_setting );
     rotate_list.push_back( objects.panel_setting_net );
     rotate_list.push_back( objects.panel_setting_net_change );
@@ -450,8 +507,14 @@ void setup()
     rotate_list.push_back( objects.panel_setting_mode );
     rotate_list.push_back( objects.panel_setting_mode_changed );
 
+    //lv_obj_set_style_opa(objects.message_container, 0, 0);
 
-    rotateWin(1);
+    //message_container
+
+    
+    //objects.con
+
+    //rotateWin(1);
     initSwithRotate();
 
 
@@ -520,6 +583,8 @@ void loop()
     //lv_obj_set_x(lv_scr_act(), 0);
 
     update_wath();
+
+    //set_var_control_rot2( get_var_control_rot2() + 1);
 
     // counter++;
     // if(counter >1000){

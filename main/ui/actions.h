@@ -17,6 +17,10 @@ extern void action_net_changed(lv_event_t * e);
 extern void action_notify_clear(lv_event_t * e);
 extern void action_add_message(lv_event_t * e);
 extern void action_tst_act(lv_event_t * e);
+extern void action_shift_data_up(lv_event_t * e);
+extern void action_shift_data_down(lv_event_t * e);
+extern void action_shift_message_up(lv_event_t * e);
+extern void action_shift_message_down(lv_event_t * e);
 
 
 #ifdef __cplusplus
