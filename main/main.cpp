@@ -293,7 +293,7 @@ void rotateWin(uint8_t rot){
         shift = 240;
         
         Serial.println("Rotate 90");
-        set_var_control_rot2( 2700 );
+        set_var_control_rot2( 900 );
     } else {
         rotate = 0;
         shift = 0;
@@ -310,8 +310,9 @@ void rotateWin(uint8_t rot){
     }
 
     for(auto val : rotate_list){
-        lv_obj_set_style_transform_angle(val, rotate, 0);
         lv_obj_set_x(val, shift);
+        lv_obj_set_style_transform_angle(val, rotate, 0);
+        
     }        
 
     File file =FileFS.open("/conf/orientation.ini", FILE_WRITE);
@@ -493,8 +494,9 @@ void setup()
     initAbout();
     initData();
 
-    rotate_list.push_back( objects.data_data );
     rotate_list.push_back( objects.panel_main );
+    rotate_list.push_back( objects.data_data );
+    
     rotate_list.push_back( objects.system_about );
     rotate_list.push_back( objects.message_list );
     rotate_list.push_back( objects.message_current );
@@ -506,6 +508,8 @@ void setup()
     rotate_list.push_back( objects.panel_setting_display_changed );
     rotate_list.push_back( objects.panel_setting_mode );
     rotate_list.push_back( objects.panel_setting_mode_changed );
+
+    
 
     //lv_obj_set_style_opa(objects.message_container, 0, 0);
 
@@ -543,6 +547,9 @@ void setup()
         0);          // Указываем пин для данного ядра  
 
     Serial.println("start [rogram]");
+
+    // lv_obj_set_x(objects.panel_main, 10);
+    // lv_obj_set_style_transform_angle(objects.panel_main, 900, 0);
 
     //ui_tick();
     //lv_timer_handler();

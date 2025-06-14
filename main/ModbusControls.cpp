@@ -98,7 +98,7 @@ void addMessage(String message){
   bg_color.blue   = 0x19;
   lv_obj_set_style_border_color(btn, bg_color, 0);
   lv_obj_set_style_border_width(btn, 2, 0);
-  lv_obj_set_user_data(btn, (void*)("asdfasdf"));
+  lv_obj_set_user_data(btn, (void*)(""));
 
   //eez_flow_set_screen();
 
