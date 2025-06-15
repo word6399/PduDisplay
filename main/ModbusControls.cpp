@@ -122,124 +122,79 @@ void addMessage(String message){
   lv_obj_add_event_cb(btn, handler, LV_EVENT_CLICKED, (void*)(message.c_str()));
 }
 
+String fileContent="";
+
+extern bool removeFlag;
+
+void fileRemove(uint16_t *data, uint16_t length)
+{
+  for(int i=0; i<length; i++)
+    fileName[i] = data[i];
+
+  removeFlag = true;
+  
+  //Serial.println("go to file update: ");
+  //Serial.println(fileName);
+  fileContent="";
+}
+
+extern bool updateDataFlag;
+void fileWrite(uint16_t *data, uint16_t length)
+{
+  File file = FileFS.open(fileName, "a");
+  file.write((uint8_t *) fileContent.c_str(), fileContent.length());
+  file.close();
+  
+  //Serial.println("file write true");
+}
 
 
-uint8_t writeHolders(uint8_t fc, uint16_t address, uint16_t length)
+
+void fileAppeng(uint16_t *data, uint16_t length)
 {
 
-    String data;
-    char buf[length];
-    //Serial.printf("adress %d, length %d\n", address, length);
+  //File file = FileFS.open(fileName, "a");
+  //file.write((uint8_t *)data, length*2);
+  //file.close();
+  fileContent += String((char *)data, length*2);
 
-    
-    if(address < dataList.getNodeCount()){         
-      int i=0;
-      for(auto node : *dataList.getList()){
-        uint16_t *ptr;
-        ptr = (uint16_t*) &node->dataF;
-        
-        ptr[0] = slave.readRegisterFromBuffer(i*2);
-        ptr[1] = slave.readRegisterFromBuffer(i*2+1);
-        i++;
+  //Serial.write((char *)data, length*2);
 
-        //Serial.printf("%f ", node->dataF);
-      }
-      //Serial.printf("\n");
-        // uint16_t data16[50];
-        // for(int i=0; i<dataList.getNodeCount(); i++){
-        //   data16[i] = slave.readRegisterFromBuffer(i);
-        // }
+}
 
-        // float req =0;
-        // uint32_t *pReq;
-        // pReq = (uint32_t *) &req;
+void mbWorckMode(uint16_t *data, uint16_t length)
+{
+   worckMode = data[0];
 
-        // for(int i=0; i<length/2; i++){
-        //   if(i >= dataList.getNodeCount())
-        //     break;
+  String wrocktext;
+  switch (worckMode)
+  {
+      case 0:
+          wrocktext = "Master";
+          break;
+      case 1:
+          wrocktext = "Slave 1";
+          break;
+      case 2:
+          wrocktext = "Slave 2";
+          break;
+      case 3:
+          wrocktext = "Slave 3";
+          break;
+  }
+  set_var_net_mode(worckMode);
+  //Serial.println("Mode: " + String(worckMode));
 
-        //   auto tmp = dataList.getById(i);
-          
-        //   tmp->dataF = i;
-        //   *pReq = data16[i*2+0];
-        //   *pReq |= ( data16[i*2+1] << 16 );
-        //   tmp->dataF = req;
-          
-        // }
+  set_var_setting_mode(worckMode);
+}
 
-
-    }
-
-
-    if(address == 200){
-      //Serial.println("realy: ");
-      
-      
-      for(int i = 0; i < length; i++){
-        fileName[i] = slave.readRegisterFromBuffer(i);
-      }  
-
-      FileFS.remove(fileName);
-      Serial.println("go ti update file");
-      Serial.println("file Name: " + String(fileName,length) ); 
-      //file.close();
-      
-
-    }
-
-    if(address == 201){
-      //Serial.println("realy: ");
-      uint16_t fileData[256];
-      
-      for(int i = 0; i < length; i++){
-        fileData[i] = slave.readRegisterFromBuffer(i);
-      }  
-
-      File file = FileFS.open(fileName, "a");
-      file.write((uint8_t *)fileData, length*2);
-      file.close();
-
-      Serial.write((char *)fileData, length*2);
-
-    }
-
-    if(address == 202){
-      ESP.restart();
-    }
-
-    if(address == 207){
-      //ESP.restart();
-      worckMode = slave.readRegisterFromBuffer(0);
-      //Serial.printf("Worck mode: %d\n", worckMode);
-      String wrocktext;
-      switch (worckMode)
-      {
-          case 0:
-              wrocktext = "Master";
-              break;
-          case 1:
-              wrocktext = "Slave 1";
-              break;
-          case 2:
-              wrocktext = "Slave 2";
-              break;
-          case 3:
-              wrocktext = "Slave 3";
-              break;
-      }
-      set_var_net_mode(worckMode);
-      //Serial.println("Mode: " + String(worckMode));
-      
-      set_var_setting_mode(worckMode);
-
-    }
-
-    if(address == 210){
-      size_t size = 0;
+void updateFsBegin(uint16_t *data, uint16_t length)
+{
+   size_t size = 0;
       
       uint16_t size16[length];
       for(int i = 0; i < length; i++){
-        size16[i] = slave.readRegisterFromBuffer(i);
+        size16[i] = data[i];
       }  
 
       uint32_t *buf32 = (uint32_t *)size16;
@@ -257,116 +212,182 @@ uint8_t writeHolders(uint8_t fc, uint16_t address, uint16_t length)
       net[3] = 0x00100010;
       //uart_set_baudrate(UART_NUM_1, 921600);
       //Serial1.begin(921600);
-    }
+}
 
-    if(address == 211){
-      uint16_t size16[length];
-      //Update.write((uint8_t *)buf, length*2);
+void updateFsAppend(uint16_t *data, uint16_t length)
+{
+  uint16_t size16[length];
+  //Update.write((uint8_t *)buf, length*2);
 
-      for(int i = 0; i < length; i++){
-        size16[i] = slave.readRegisterFromBuffer(i);
-      }  
-      total+=length*2;
-      //Serial.println(" update fs: " + String(total));
- 
-      Update.write((uint8_t *)size16, length*2);
+  for(int i = 0; i < length; i++){
+    size16[i] = data[i];
+  }  
+  total+=length*2;
+  //Serial.println(" update fs: " + String(total));
 
-      
+  Update.write((uint8_t *)size16, length*2);
+}
 
- 
-    }
-    if(address == 212){
-      
-      if (Update.end()) {
-        Serial.println("File FS OTA done!");
-        if (Update.isFinished()) {
-          Serial.println("Update FileFS successfully completed. Rebooting.");
-          //ESP.restart();
-        } else {
-          Serial.println("Update not finished? Something went wrong!");
-        }
+void updateFsEnd(uint16_t *data, uint16_t length)
+{
+  if (Update.end()) {
+      Serial.println("File FS OTA done!");
+      if (Update.isFinished()) {
+        Serial.println("Update FileFS successfully completed. Rebooting.");
+        //ESP.restart();
       } else {
-        Serial.println("Error Occurred. Error #: " + String(Update.getError()));
+        Serial.println("Update not finished? Something went wrong!");
       }
-
-      Update.begin(remainingFirmware, U_FLASH); 
-
-      //Serial1.begin(115200);
+    } else {
+      Serial.println("Error Occurred. Error #: " + String(Update.getError()));
     }
 
-    if(address == 214){      
-      if (Update.end()) {
-        Serial.println("File FS OTA done!");
-        if (Update.isFinished()) {
-          Serial.println("Update FileFS successfully completed. Rebooting.");
-          ESP.restart();
-        } else {
-          Serial.println("Update not finished? Something went wrong!");
-        }
+    Update.begin(remainingFirmware, U_FLASH); 
+}
+
+void updateSourceEnd(uint16_t *data, uint16_t length)
+{
+  if (Update.end()) {
+      Serial.println("File FS OTA done!");
+      if (Update.isFinished()) {
+        Serial.println("Update FileFS successfully completed. Rebooting.");
+        ESP.restart();
       } else {
-        Serial.println("Error Occurred. Error #: " + String(Update.getError()));
+        Serial.println("Update not finished? Something went wrong!");
       }
+    } else {
+      Serial.println("Error Occurred. Error #: " + String(Update.getError()));
     }
+}
 
-    if(address == 240){
-      
-      
-      for(int i = 0; i < length; i++){
-        uint16_t adr = slave.readRegisterFromBuffer(i);
-        net[i] = adr;//slave.readRegisterFromBuffer(i);
+void updateNet(uint16_t *data, uint16_t length)
+{
+  for(int i = 0; i < length; i++){
+    uint16_t adr = data[i];
+    net[i] = adr;//slave.readRegisterFromBuffer(i);
 
-      } 
+  } 
 
-      uint8_t *ptr8;
-      ptr8 = (uint8_t *)net;
-      char ip[100];
-      char mask[100];
-      char gw[100];
-      sprintf(ip,"%d.%d.%d.%d", ptr8[0], ptr8[1], ptr8[2], ptr8[3]);
-      sprintf(mask,"%d.%d.%d.%d", ptr8[4], ptr8[5], ptr8[6], ptr8[7]);
-      sprintf(gw,"%d.%d.%d.%d", ptr8[8], ptr8[9], ptr8[10], ptr8[11]);
+  uint8_t *ptr8;
+  ptr8 = (uint8_t *)net;
+  char ip[100];
+  char mask[100];
+  char gw[100];
+  sprintf(ip,"%d.%d.%d.%d", ptr8[0], ptr8[1], ptr8[2], ptr8[3]);
+  sprintf(mask,"%d.%d.%d.%d", ptr8[4], ptr8[5], ptr8[6], ptr8[7]);
+  sprintf(gw,"%d.%d.%d.%d", ptr8[8], ptr8[9], ptr8[10], ptr8[11]);
 
-      if(net[6] == 1){
-        if( get_var_net_dhcp() != true){
-          //set_var_set_net_mode(true);
-          set_var_net_dhcp(true); 
-        }
-              
-      } else if(net[6] == 2) {      
-        if( get_var_net_dhcp() != false){
-          //set_var_set_net_mode(false);
-          set_var_net_dhcp(false);
-        }  
-        
-      }
-      
-      set_var_setting_net_ip(ip);
-      set_var_setting_net_mask(mask);
-      set_var_setting_net_gw(gw);
-
+  if(net[6] == 1){
+    if( get_var_net_dhcp() != true){
+      //set_var_set_net_mode(true);
+      set_var_net_dhcp(true); 
     }
-
-    if(address == 241){
-      uint16_t size16[length];
-      for(int i = 0; i < length; i++){
-        size16[i] = slave.readRegisterFromBuffer(i);
-      }  
-      uint8_t *data = (uint8_t *)size16;
-      String str(data, length*2);
-      //Serial.println(str);
-      
-      dataList.addMessage(str);
-      addMessage(str);
-
-      set_var_notify_count(dataList.getMessageList()->size());
-      
-      messageCount++;
-    }
+          
+  } else if(net[6] == 2) {      
+    if( get_var_net_dhcp() != false){
+      //set_var_set_net_mode(false);
+      set_var_net_dhcp(false);
+    }  
     
+  }
+  
+  set_var_setting_net_ip(ip);
+  set_var_setting_net_mask(mask);
+  set_var_setting_net_gw(gw);
+}
 
-   
+void updateMessage(uint16_t *data, uint16_t length)
+{
+
+  uint8_t *data8 = (uint8_t *)data;
+  String str(data8, length*2);
+  
+  dataList.addMessage(str);
+  addMessage(str);
+
+  set_var_notify_count(dataList.getMessageList()->size());
+  
+  messageCount++;
+}
+
+void updateDisplay(uint16_t *data, uint16_t length)
+{
+  //fileWrite(data, length);
+  updateDataFlag = true;
+
+}
+
+uint8_t writeHolders(uint8_t fc, uint16_t address, uint16_t length)
+{
+
+  String data;
+  
+  //Serial.printf("adress %d, length %d\n", address, length);
+
+  
+  if(address < dataList.getNodeCount()){         
+    int i=0;
+    for(auto node : *dataList.getList()){
+      uint16_t *ptr;
+      ptr = (uint16_t*) &node->dataF;
+      
+      ptr[0] = slave.readRegisterFromBuffer(i*2);
+      ptr[1] = slave.readRegisterFromBuffer(i*2+1);
+      i++;
+
+      //Serial.printf("%f ", node->dataF);
+    }
+    //Serial.printf("\n");
+      // uint16_t data16[50];
+      // for(int i=0; i<dataList.getNodeCount(); i++){
+      //   data16[i] = slave.readRegisterFromBuffer(i);
+      // }
+
+      // float req =0;
+      // uint32_t *pReq;
+      // pReq = (uint32_t *) &req;
+
+      // for(int i=0; i<length/2; i++){
+      //   if(i >= dataList.getNodeCount())
+      //     break;
+
+      //   auto tmp = dataList.getById(i);
+        
+      //   tmp->dataF = i;
+      //   *pReq = data16[i*2+0];
+      //   *pReq |= ( data16[i*2+1] << 16 );
+      //   tmp->dataF = req;
+        
+      // }
 
     return 0;
+  }
+
+  uint16_t buf[length];
+  for(uint16_t i = 0; i < length; i++){
+    buf[i] = slave.readRegisterFromBuffer(i);
+  }  
+
+  switch(address){
+    case 200: fileRemove(buf, length); break;
+    case 201: fileAppeng(buf, length); break;
+    case 202: ESP.restart(); break;
+    case 205: updateDisplay(buf, length); break;
+    case 207: mbWorckMode(buf, length); break;
+
+    // Update Source
+    case 210: updateFsBegin(buf, length); break;
+    case 211: updateFsAppend(buf, length); break; 
+    case 212: updateFsEnd(buf, length); break; 
+    case 214: updateSourceEnd(buf, length); break; 
+
+    case 240: updateNet(buf, length); break; 
+    case 241: updateMessage(buf, length); break; 
+
+    default: break;
+  }    
+
+  return 0;
 }
 
 void action_mode_changed(lv_event_t *e) {
@@ -457,26 +478,12 @@ void ModbusControls::init()
 }
 
 void ModbusControls::tick()
-{
-  // if(Serial1.available()){
-  //   int len = Serial1.available();
-
-  //   char buf[len];
-
-  //   Serial1.readBytes(buf, len);
-  //   Serial.print("data: ");
-
-  //   for(int i = 0; i < len; i++)
-  //   {
-  //     Serial.printf("%X ", buf[i]);
-  //   }
-  //   Serial.println();
-  // }
-  // delay(1);
-    
+{    
   if( slave.poll() == 0){
     delay(1);
   };
 }
 
 ModbusControls modBus;
+
+

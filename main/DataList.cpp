@@ -60,8 +60,14 @@ void DataList::init()
 void DataList::initDisplayData()
 {
     File file = FileFS.open(displayDataFile);
+
+    //Serial.println(file.readString());
+
     DynamicJsonDocument doc(64*1024);
     deserializeJson(doc, file);
+
+    m_displayData.clear();
+    Serial.println("Size: " + String(doc.size()));
 
     for(int i=0; i<doc.size(); i++)
     {
@@ -72,6 +78,12 @@ void DataList::initDisplayData()
         node.meas   = doc[i]["meas"].as<String>();
         node.input  = doc[i]["input"];
         m_displayData.push_back(node);
+
+        Serial.println("node [" + String(i) + "] node.id     " + String(node.id) );
+        Serial.println("node [" + String(i) + "] node.name   " + String(node.name) );
+        Serial.println("node [" + String(i) + "] node.pric   " + String(node.pric) );
+        Serial.println("node [" + String(i) + "] node.meas   " + String(node.meas) );
+        Serial.println("node [" + String(i) + "] node.input  " + String(node.input) );
     }    
 }
 

@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: CC0-1.0
  */
 
- #include <Arduino.h>
- #include "ui/ui.h"
-
+#include <Arduino.h>
+#include "ui/ui.h"
+#include "Windows.h"
 
 #include "Display.h"
 #include "About.h"
@@ -163,11 +163,7 @@ void addElement(lv_obj_t * parent,const char* text)
 
 void initAbout()
 {
-    //objects.system_about;
-    lv_obj_clean(objects.system_about);
-
-
-    
+    lv_obj_clean(objects.system_about);    
 
     String data;
     data = "MFR: " + about.companu();
@@ -208,75 +204,10 @@ void addDataRelay(lv_obj_t * parent, const char* text, float *value)
     lv_obj_add_state(swith, LV_STATE_CHECKED);
     lv_obj_set_align(swith, LV_ALIGN_RIGHT_MID);
     lv_obj_set_size(swith, 50, 25);
-
 }
 
-typedef struct 
-{
-    float *value;
-    lv_obj_t *label;
-    int prec;
-} t_watch;
-
-std::vector<t_watch> wath;
 
 
-void addDataDisplay(lv_obj_t * parent, const char* text, float *value, const char * meas, int prec =0)
-{
-    lv_obj_t *obj = lv_obj_create( parent );
-    lv_obj_set_style_bg_opa(obj, 0, 0);
-    lv_obj_set_style_pad_all(obj, 0, 0);
-    lv_obj_set_style_border_width(obj, 0, 0);
-    lv_obj_set_size (obj, LV_PCT(100), 68); 
-
-    lv_obj_t *label_name = lv_label_create( obj );
-    lv_label_set_text(label_name, text);
-    lv_obj_set_style_text_font(label_name, &ui_font_nunito_bold_18, 0);
-    lv_obj_set_align(label_name, LV_ALIGN_TOP_MID);
-    {
-        lv_obj_t *container = lv_obj_create( obj );
-        lv_obj_set_style_bg_opa(container, 0, 0);
-        lv_obj_set_style_pad_all(container, 0, 0);
-        lv_obj_set_style_pad_top(container, 20, 0);
-        lv_obj_set_size(container, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
-        lv_obj_set_style_border_width(container, 0, 0);
-        lv_obj_set_layout(container, LV_LAYOUT_FLEX);
-        lv_obj_set_align(container, LV_ALIGN_TOP_MID);
-
-        lv_obj_t *label_value = lv_label_create( container );
-        lv_obj_set_style_text_font(label_value, &ui_font_nunito_bold_46, 0);
-        lv_label_set_text_fmt(label_value, String(*value, prec).c_str());
-
-        lv_obj_t *label_meas = lv_label_create(container);
-        lv_obj_set_style_text_font(label_meas, &ui_font_nunito_bold_18, 0);
-        lv_label_set_text_fmt(label_meas, "\n%s", meas);
-
-        t_watch node;
-        node.label = label_value;
-        node.value = value;
-        node.prec = prec;
-
-        wath.push_back(node);
-    }
-    
-}
-
-void initData()
-{
-    lv_obj_clean(objects.data_data); // Нужно потом раскоментировать
-    float tmp = 219;
-
-    auto list = dataList.displayData();
-
-    for(auto node: *list){
-        float *ptr = &dataList.getById(node.id)->dataF;
-        if(node.input)
-            addDataRelay(objects.data_data, node.name.c_str(), ptr);
-        else 
-            addDataDisplay(objects.data_data, node.name.c_str(), ptr, node.meas.c_str(), node.pric);
-    }
-    
-}
 
 std::vector<lv_obj_t *> rotate_list;
 
@@ -492,7 +423,9 @@ void setup()
 
     modBus.init();
     initAbout();
-    initData();
+    //initData();
+
+    win.initData();
 
     rotate_list.push_back( objects.panel_main );
     rotate_list.push_back( objects.data_data );
@@ -542,7 +475,7 @@ void setup()
         "Task1",     // Ее имя. 
         16*1024,       // Размер стека функции 
         NULL,        // Параметры 
-        1,           // Приоритет 
+        20,           // Приоритет 
         &Task1,      // Дескриптор задачи для отслеживания 
         0);          // Указываем пин для данного ядра  
 
@@ -572,33 +505,38 @@ void Task1code( void * pvParameters ){
   }
 
 int counter =0;
+bool updateDataFlag = false;
+bool removeFlag = false;
 
-void update_wath()
-{
-    for(auto val: wath){
-        
-        lv_label_set_text(val.label, String(*val.value, val.prec).c_str());
-    }
-    //
-}
+extern char fileName[100];
+
 void loop()
 {
     ui_tick();
     lv_timer_handler();
-    
     lv_tick_inc(1);
-    //lv_obj_set_x(lv_scr_act(), 0);
 
-    update_wath();
 
-    //set_var_control_rot2( get_var_control_rot2() + 1);
+    win.tickData();
+
+    if(removeFlag){
+        removeFlag = false;
+        FileFS.remove(fileName);
+    }
+
+    if(updateDataFlag){
+        uint16_t buf[32]; 
+        fileWrite(buf, 0);
+        Serial.println("win update");
+        updateDataFlag = false;
+        dataList.initDisplayData();
+        win.initData();
+    }
 
     // counter++;
     // if(counter >1000){
     //     counter =0;
-    //     //Serial.printf("width: %d, height: %d\n", (int)lv_obj_get_width(lv_scr_act()), (int)lv_obj_get_height(lv_scr_act()));
-    //     uint32_t count = lv_group_get_obj_count(groups.setting_rotate);
-    //     Serial.printf("Group size: %d\n", (int)count);
+    //     win.initData();
     // }
     // delay(1);
 }
